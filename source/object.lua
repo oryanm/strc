@@ -127,7 +127,7 @@ function Cat:update(dt)
 	local x1,y1, x2,y2 = self.shape:bbox()
 	position.x = self.speed.x * dt + (acceleration.x * dt * dt)/2
 	position.y = self.speed.y * dt + (acceleration.y * dt * dt)/2
-	print("position " .. ": " ..  position.x)
+	--print("position " .. ": " ..  position.x)
 
 	-- bound the cat in the screen (horizontally)
 	-- vertically the cat will be bounded by earth and gravity
