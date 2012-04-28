@@ -27,9 +27,10 @@ function love.load()
 end
 
 function love.update(dt)
-
+	-- pause the game by not updating
 	if game.pause then return end
 
+	-- dont know what it does but it helps
 	dt = math.min(dt, 0.01)
 	--print(dt)
 	--love.timer.sleep(500)
@@ -38,7 +39,7 @@ function love.update(dt)
 	--end
 
 	-- check for collisions
-    collider:update(dt)
+	collider:update(dt)
 
 	-- move stuff around
 	cat:update(dt)
@@ -48,30 +49,32 @@ function love.update(dt)
 end
 
 function on_collide(dt, shape_a, shape_b)
-    if shape_a.object == earth then
+	-- todo: change the API so that everyone implements collide() and rebound()
+	if shape_a.object == earth then
 		shape_b.object:collide(earth)
 	elseif shape_b.object == earth then
-        shape_a.object:collide(earth)
-    elseif shape_a.object == cat and shape_b.object == turtle then
+		shape_a.object:collide(earth)
+	elseif shape_a.object == cat and shape_b.object == turtle then
 		cat:collide(turtle)
 	elseif shape_b.object == cat and shape_a.object == turtle then
 		cat:collide(turtle)
-    end
+	end
 end
 
 function done_collide(dt, shape_a, shape_b)
 	if shape_a.object == earth then
 		shape_b.object:rebound(earth)
 	elseif shape_b.object == earth then
-        shape_a.object:rebound(earth)
-    elseif shape_a.object == cat and shape_b.object == turtle then
+		shape_a.object:rebound(earth)
+	elseif shape_a.object == cat and shape_b.object == turtle then
 		cat:rebound(turtle)
 	elseif shape_b.object == cat and shape_a.object == turtle then
 		cat:rebound(turtle)
-    end
+	end
 end
 
--- the camera is positioned xPercent of the screen's width behind the player's center
+-- the camera is positioned xPercent of the screen's width behind turtle's center
+-- sot that it fallows turtle when he moves
 function positionCamera(xPercent, yPercent)
 	local turtleXCenter,turtleYCenter = turtle.shape:center()
 	camera:setPosition(
@@ -88,7 +91,7 @@ function love.draw()
 
 	--love.graphics.setColor(255,255,255,150)
 	turtle:draw()
-	love.graphics.setColor(255,255,255,255)
+	--love.graphics.setColor(255,255,255,255)
 	cat:draw()
 	drawHUD()
 
@@ -96,7 +99,7 @@ function love.draw()
 end
 
 function drawHUD()
-	local x1,y1, x2,y2 = cat.shape:bbox()
+	local x1, y1, x2, y2 = cat.shape:bbox()
 
 	love.graphics.print("w : " .. game:screenWidth(), 0, 0)
 	love.graphics.print("h : " .. game:screenHeight(), 0, 10)
