@@ -12,7 +12,6 @@ function love.load()
 
 	game:start()
 
-
 	earth = Object:new(collider:addRectangle(0, game:mapHeight() - 20, game:mapWidth(), 20))
 	turtle = Turtle:new(collider:addRectangle(50, 300, 50, 50))
 	cat = Cat:new(collider:addRectangle(200, 200, 20, 20))
