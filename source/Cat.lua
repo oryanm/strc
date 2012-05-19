@@ -1,9 +1,9 @@
-require 'GameObject'
+require 'LivingObject'
 
-Cat = class('Cat', GameObject)
+Cat = class('Cat', LivingObject)
 
 function Cat:initialize(shape)
-	GameObject.initialize(self, shape)
+	LivingObject.initialize(self, shape)
 	self.forces[game.gravity] = {x = 0, y = game.gravity}
 	self.jumpTime = 0
 end
@@ -13,20 +13,14 @@ function Cat:update(dt)
 	self.jumpTime = self.jumpTime + dt
 	if (self.jumpTime > MAX_JUMP_TIME) then self.forces[SPACE] = nil end
 
-	-- calculate acceleration
-	local acceleration = {x = 0, y = 0}
+	LivingObject.update(self, dt)
+end
 
-	for k in pairs(self.forces) do
-		--print("force " .. --[[tostring(k) ..]] ": " ..  self.forces[k].x)
-		acceleration.x = acceleration.x + self.forces[k].x
-		acceleration.y = acceleration.y + self.forces[k].y
-	end
-
-	-- move to new position
+function Cat:calculatePosition(dt, acceleration)
 	local position = {x = 0, y = 0}
 	local x1,y1, x2,y2 = self.shape:bbox()
-	position.x = self.speed.x * dt + (acceleration.x * dt * dt)/2
-	position.y = self.speed.y * dt + (acceleration.y * dt * dt)/2
+
+	position.x, position.y = LivingObject.calculatePosition(self, dt, acceleration)
 
 	-- bound the cat in the screen (horizontally)
 	-- vertically the cat will be bounded by earth and gravity
@@ -38,11 +32,7 @@ function Cat:update(dt)
 		self.speed.x = -0.1*self.speed.x
 	end
 
-	self.shape:move(position.x, position.y)
-
-	-- calculate new speed
-	self.speed.x = math.clamp(AIR_FRICTION*self.speed.x + acceleration.x * dt, -self.maxSpeed, self.maxSpeed)
-	self.speed.y = math.clamp(AIR_FRICTION*self.speed.y + acceleration.y * dt, -self.maxSpeed, self.maxSpeed)
+	return position.x, position.y
 end
 
 function Cat:draw()
@@ -60,6 +50,30 @@ function Cat:collide(otherObject)
 
 		-- reset jumping
 		self.jumpTime = 0
+	elseif instanceOf(Enemy, otherObject) then
+
+		local ccx, ccy = self.shape:center()
+		local x1, y1, x2, y2 = self.shape:bbox()
+		local cw , ch = x2 - x1, y2 - y1
+		local tcx, tcy = otherObject.shape:center()
+		local x1, y1, x2, y2 = otherObject.shape:bbox()
+		local tw , th = x2 - x1, y2 - y1
+		local fx, fy = 0, 0
+
+		if ((ccx > tcx) and ((ccx - cw/2) < (tcx + tw/2))) then
+			fx = -50*JUMPING_FORCE
+			fy = 50*JUMPING_FORCE
+			self.speed.x = -self.speed.x
+		elseif ((ccx < tcx) and ((ccx + cw/2) > (tcx - tw/2))) then
+			fx = 50*JUMPING_FORCE
+			fy = 50*JUMPING_FORCE
+			self.speed.x = -self.speed.x
+		end
+
+		-- apply otherObject's force on self
+		self.forces[otherObject] = {x = fx, y = fy}
+
+
 	elseif otherObject == turtle then
 		local ccx, ccy = self.shape:center()
 		local x1, y1, x2, y2 = self.shape:bbox()
@@ -101,6 +115,8 @@ end
 function Cat:rebound(otherObject)
 	-- remove otherObject's force on self
 	if otherObject == earth then
+		self.forces[otherObject] = nil
+	elseif instanceOf(Enemy, otherObject) then
 		self.forces[otherObject] = nil
 	elseif otherObject == turtle then
 		self.forces[otherObject] = nil

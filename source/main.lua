@@ -3,8 +3,10 @@ require('camera')
 require('const')
 require('game')
 require('GameObject')
+require('LivingObject')
 require('Turtle')
 require('Cat')
+require('Enemy')
 
 collider = nil
 
@@ -24,9 +26,10 @@ function love.load()
 	turtle = Turtle:new(collider:addRectangle(50, 300, 100, 70))
 	cat = Cat:new(collider:addRectangle(900, 300, 20, 20))
 
-	game.objects['earth'] = earth;
-	game.objects['turtle'] = turtle;
-	game.objects['cat'] = cat;
+	game.objects['earth'] = earth
+	game.objects['Turtle'] = turtle
+	game.objects['Cat'] = cat
+--	game.objects['Enemy'] = Enemy:new(collider:addRectangle(930, 300, 20, 20))
 end
 
 function love.update(dt)
