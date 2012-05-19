@@ -48,13 +48,10 @@ Turtle.speed =
 }
 
 function Turtle:update(dt)
-	--self.shape:move(self.speed.x * dt, self.speed.y * dt)
-
 	-- calculate acceleration
 	local acceleration = {x = 0, y = 0}
 
 	for k in pairs(self.forces) do
-		--print("force " .. tostring(k) .. ": " ..  self.forces[k].y)
 		acceleration.x = acceleration.x + self.forces[k].x
 		acceleration.y = acceleration.y + self.forces[k].y
 	end
@@ -68,7 +65,6 @@ function Turtle:update(dt)
 	-- calculate new speed
 	self.speed.x = math.clamp(AIR_FRICTION*self.speed.x + acceleration.x * dt, -self.maxSpeed, self.maxSpeed)
 	self.speed.y = math.clamp(AIR_FRICTION*self.speed.y + acceleration.y * dt, -self.maxSpeed, self.maxSpeed)
-	--print("speed " .. ": " ..  self.speed.y)
 end
 
 function Turtle:collide(otherObject)
@@ -76,12 +72,10 @@ function Turtle:collide(otherObject)
 		-- add earth force to counter gravity
 		self.forces[otherObject] = {x = 0, y = -game.gravity}
 
-		-- applay collision affect on speed
+		-- apply collision affect on speed
 		local restitution = 0.1
 		self.speed.y = -restitution*self.speed.y
 		self.speed.x = SURFACE_FRICTION*self.speed.x
-
-		--print("speed " .. ": " ..  self.speed.y)
 	end
 end
 
@@ -108,7 +102,6 @@ Cat.speed =
 }
 
 function Cat:update(dt)
-
 	-- limit jump
 	self.jumpTime = self.jumpTime + dt
 	if (self.jumpTime > MAX_JUMP_TIME) then self.forces[SPACE] = nil end
@@ -127,7 +120,6 @@ function Cat:update(dt)
 	local x1,y1, x2,y2 = self.shape:bbox()
 	position.x = self.speed.x * dt + (acceleration.x * dt * dt)/2
 	position.y = self.speed.y * dt + (acceleration.y * dt * dt)/2
-	--print("position " .. ": " ..  position.x)
 
 	-- bound the cat in the screen (horizontally)
 	-- vertically the cat will be bounded by earth and gravity
@@ -144,7 +136,6 @@ function Cat:update(dt)
 	-- calculate new speed
 	self.speed.x = math.clamp(AIR_FRICTION*self.speed.x + acceleration.x * dt, -self.maxSpeed, self.maxSpeed)
 	self.speed.y = math.clamp(AIR_FRICTION*self.speed.y + acceleration.y * dt, -self.maxSpeed, self.maxSpeed)
-	--print("speed " .. ": " ..  self.speed.y)
 end
 
 function Cat:collide(otherObject)
@@ -152,28 +143,26 @@ function Cat:collide(otherObject)
 		-- add earth force to counter gravity
 		self.forces[otherObject] = {x = 0, y = -game.gravity}
 
-		-- applay collision affect on speed
+		-- apply collision affect on speed
 		self.speed.y = -0.1*self.speed.y
 		self.speed.x = SURFACE_FRICTION*self.speed.x
-		--print("speed " .. ": " ..  self.speed.y)
 
 		-- reset jumping
 		self.jumpTime = 0
 	elseif otherObject == turtle then
 		local ccx, ccy = self.shape:center()
 		local x1, y1, x2, y2 = self.shape:bbox()
-		local cw , ch= x2 - x1, y2 - y1
+		local cw , ch = x2 - x1, y2 - y1
 		local tcx, tcy = otherObject.shape:center()
-		x1, y1, x2, y2 = otherObject.shape:bbox()
+		local x1, y1, x2, y2 = otherObject.shape:bbox()
 		local tw , th = x2 - x1, y2 - y1
 		local fx, fy = 0, 0
 
 		-- if cat is directly above turtle
-		if (((ccy+ch/2-5)<(tcy-th/2)) and ((ccx < (tcx + tw/2)) or (ccx > (tcx - tw/2)))) then
-
+		if ((ccy + (ch/2) - 5) < (tcy - (th/2))) then
 			-- add force to counter gravity
 			fy = -game.gravity
-			-- applay collision affect on speed
+			-- apply collision affect on speed
 			self.speed.y = -0.1*self.speed.y
 			self.speed.x = SURFACE_FRICTION*self.speed.x
 
@@ -183,21 +172,23 @@ function Cat:collide(otherObject)
 			-- start walking
 			turtle.forces["walk"] = {x = WALKING_FORCE, y = 0}
 			self.forces["ride"] = {x = WALKING_FORCE, y = 0}
-		-- if cat is to turlte's right
+		-- if cat is to turtle's right
 		elseif ((ccx > tcx) and ((ccx - cw/2) < (tcx + tw/2))) then
 			fx = RUNNING_FORCE
 			self.speed.x = -0.1*self.speed.x
-		-- if cat is to turlte's left
+		-- if cat is to turtle's left
 		elseif ((ccx < tcx) and ((ccx + cw/2) > (tcx - tw/2))) then
 			fx = -RUNNING_FORCE
 			self.speed.x = -0.1*self.speed.x
 		end
 
+		-- apply otherObject's force on self
 		self.forces[otherObject] = {x = fx, y = fy}
 	end
 end
 
 function Cat:rebound(otherObject)
+	-- remove otherObject's force on self
 	if otherObject == earth then
 		self.forces[otherObject] = nil
 	elseif otherObject == turtle then
