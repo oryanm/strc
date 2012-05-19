@@ -1,3 +1,5 @@
+require('camera')
+
 game = {}
 game.map = {}
 game.map.width = 2680 < love.graphics.getWidth() and love.graphics.getWidth() or 2680 -- must be >= to screen width
@@ -8,6 +10,10 @@ game.pause = true
 
 function game:start()
 	print(game.map.width .. " " .. game.map.height)
+
+	-- the camera can move between 0 and the map's width minus the screen's width
+	camera:setBounds(0, 0, game:mapWidth() - game:screenWidth(),
+		game:mapHeight() - game:screenHeight())
 end
 
 function game:mapWidth()

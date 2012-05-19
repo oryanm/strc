@@ -2,64 +2,65 @@ HardonCollider = require ('hardoncollider')
 require('camera')
 require('const')
 require('game')
-require('object')
+require('GameObject')
+require('Turtle')
+require('Cat')
+
+collider = nil
+
+earth = nil
+turtle = nil
+cat = nil
 
 function love.load()
 	-- create a collider
 	collider = HardonCollider(100, on_collide, done_collide)
 
-	background = love.graphics.newImage("back.png")
+--	background = love.graphics.newImage("back.png")
 
 	game:start()
 
-	earth = Object:new(collider:addRectangle(0, game:mapHeight() - 20, game:mapWidth(), 20))
+	earth = GameObject:new(collider:addRectangle(0, game:mapHeight() - 20, game:mapWidth(), 20))
 	turtle = Turtle:new(collider:addRectangle(50, 300, 100, 70))
 	cat = Cat:new(collider:addRectangle(900, 300, 20, 20))
 
-	-- todo: remove this from here
-	turtle.forces[game.gravity] = {x = 0, y = game.gravity}
-	--turtle.forces["walk"] = {x = 3000, y = 0}
-	cat.forces[game.gravity] = {x = 0, y = game.gravity}
-
-	-- the camera can move between 0 and the map's width minus the screen's width
-	camera:setBounds(0, 0, game:mapWidth() - game:screenWidth(),
-		game:mapHeight() - game:screenHeight())
+	game.objects['earth'] = earth;
+	game.objects['turtle'] = turtle;
+	game.objects['cat'] = cat;
 end
 
 function love.update(dt)
 	-- pause the game by not updating
 	if game.pause then return end
 
-	-- dont know what it does but it helps
+	-- don't know what it does but it helps
 	dt = math.min(dt, 0.01)
-	--print(dt)
-	--love.timer.sleep(500)
-	--if dt < 1/60 then
-	--	love.timer.sleep(1000 * (1/60 - dt))
-	--end
 
 	-- check for collisions
 	collider:update(dt)
 
 	-- move stuff around
-	cat:update(dt)
-	turtle:update(dt)
+	for k,v in pairs(game.objects) do
+		v:update(dt)
+	end
 
 	positionCamera(20, 50)
 end
 
 function on_collide(dt, shape_a, shape_b)
+	-- collide the two objects with each other
 	shape_b.object:collide(shape_a.object)
 	shape_a.object:collide(shape_b.object)
 end
 
 function done_collide(dt, shape_a, shape_b)
+	-- rebound the two objects from each other
 	shape_b.object:rebound(shape_a.object)
 	shape_a.object:rebound(shape_b.object)
 end
 
 -- the camera is positioned xPercent of the screen's width behind turtle's center
--- sot that it fallows turtle when he moves
+-- so that it fallows turtle when he moves
 function positionCamera(xPercent, yPercent)
 	local turtleXCenter,turtleYCenter = turtle.shape:center()
 	camera:setPosition(
@@ -70,14 +71,13 @@ end
 function love.draw()
 	camera:set()
 
-	--love.graphics.draw(background, 0, 0)
+--	love.graphics.setColor(0,255,0,255)
+--	love.graphics.draw(background, 0, 0)
 
-	earth:draw()
+	for k,v in pairs(game.objects) do
+		v:draw()
+	end
 
-	--love.graphics.setColor(255,255,255,150)
-	turtle:draw()
-	--love.graphics.setColor(255,255,255,255)
-	cat:draw()
 	drawHUD()
 
 	camera:unset()
