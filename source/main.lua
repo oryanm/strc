@@ -118,8 +118,8 @@ function love.keypressed(key, unicode)
 		cat.forces[key] = {x = RUNNING_FORCE, y = 0}
 	elseif key == 'left' then
 		cat.forces[key] = {x = -RUNNING_FORCE, y = 0}
-	elseif key == ' '  then
-		cat.forces[key] = {x = 0, y = JUMPING_FORCE}
+	elseif key == ' ' or key == 'up' then
+		cat.forces[SPACE] = {x = 0, y = JUMPING_FORCE}
 	elseif key == 'p' then
 		game.pause = not game.pause
 	elseif key == "escape" then
@@ -132,14 +132,27 @@ function love.keyreleased(key)
 		cat.forces[key] = nil
 	elseif key == 'right' then
 		cat.forces[key] = nil
-	elseif key == ' ' then
-		cat.forces[key] = nil
+	elseif key == ' ' or key == 'up' then
+		cat.forces[SPACE] = nil
+	elseif key == 'f11' then
+		 toggleFullscreen()
 	end
 end
 
 function love.focus(f)
 	-- pause the game when out of focus
 	game.pause = not f
+end
+
+function toggleFullscreen()
+	local w, h, fullscreen, v, f = love.graphics.getMode()
+
+	if fullscreen then
+		love.graphics.setMode( 1000, 500, not fullscreen,  v, f)
+	else
+		--TODO: need to find a way to get monitor resolution
+		love.graphics.setMode( 1280, 1024, not fullscreen,  v, f)
+	end
 end
 
 function math.clamp(x, min, max)

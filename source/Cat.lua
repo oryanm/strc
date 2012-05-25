@@ -1,6 +1,8 @@
 require 'LivingObject'
+require 'Trailable'
 
 Cat = class('Cat', LivingObject)
+Cat:include(Trailable)
 
 function Cat:initialize(shape)
 	LivingObject.initialize(self, shape)
@@ -9,14 +11,28 @@ function Cat:initialize(shape)
 end
 
 function Cat:update(dt)
-	-- limit jump
-	self.jumpTime = self.jumpTime + dt
-	if (self.jumpTime > MAX_JUMP_TIME) then self.forces[SPACE] = nil end
-
+	self:limitJump(dt)
 	LivingObject.update(self, dt)
+	self:addTrail()
 end
 
-function Cat:calculatePosition(dt, acceleration)
+function Cat:limitJump(dt)
+	if not (self.forces[SPACE] == nil) then
+		-- update jump time when jumping
+		self.jumpTime = self.jumpTime + dt
+		-- by the time self.jumpTime is 10%,20%,..,100% of MAX_JUMP_TIME
+		-- this will reduce the jump force by 10%,20%,..,100%
+		self.forces[SPACE].y = math.clamp(
+			self.forces[SPACE].y - ((JUMPING_FORCE * dt) / MAX_JUMP_TIME), self.forces[SPACE].y, 0)
+	end
+
+	-- stop jump force when max jump time reached
+	if (self.jumpTime > MAX_JUMP_TIME) then
+		self.forces[SPACE] = nil
+	end
+end
+
+	function Cat:calculatePosition(dt, acceleration)
 	local position = {x = 0, y = 0}
 	local x1,y1, x2,y2 = self.shape:bbox()
 
@@ -37,6 +53,7 @@ end
 
 function Cat:draw()
 	self.shape:draw("fill")
+	self:drawTrail()
 end
 
 function Cat:collide(otherObject)
@@ -62,11 +79,11 @@ function Cat:collide(otherObject)
 
 		if ((ccx > tcx) and ((ccx - cw/2) < (tcx + tw/2))) then
 			fx = -50*JUMPING_FORCE
-			fy = 50*JUMPING_FORCE
+			fy = 25*JUMPING_FORCE
 			self.speed.x = -self.speed.x
 		elseif ((ccx < tcx) and ((ccx + cw/2) > (tcx - tw/2))) then
 			fx = 50*JUMPING_FORCE
-			fy = 50*JUMPING_FORCE
+			fy = 25*JUMPING_FORCE
 			self.speed.x = -self.speed.x
 		end
 
