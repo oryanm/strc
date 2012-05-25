@@ -46,6 +46,7 @@ function LivingObject:calculateSpeed(dt, acceleration)
 end
 
 function LivingObject:die()
+	-- remove self from the world (the collider) and from the game
 	collider:remove(self.shape)
 	game.objects[self:__tostring()] = nil
 end
