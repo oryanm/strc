@@ -24,9 +24,7 @@ function Turtle:collide(otherObject)
 end
 
 function Turtle:rebound(otherObject)
-	if otherObject == earth then
-		self.forces[otherObject] = nil
-	end
+	self.forces[otherObject] = nil
 end
 
 function Turtle:__tostring()

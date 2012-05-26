@@ -8,31 +8,62 @@ function Cat:initialize(shape)
 	LivingObject.initialize(self, shape)
 	self.forces[game.gravity] = {x = 0, y = game.gravity}
 	self.jumpTime = 0
+	self.health = 100
+
+	-- the time self has been paralyzed.
+	-- -1 when self is not paralyzed
+	self.paralyzeTime = -1
 end
 
 function Cat:update(dt)
+	self:paralyze(dt)
 	self:limitJump(dt)
 	LivingObject.update(self, dt)
 	self:addTrail()
 end
 
+function Cat:paralyze(dt)
+	if (self.paralyzeTime >= 0) then
+		-- update paralyze time
+		self.paralyzeTime = self.paralyzeTime + dt
+
+		-- paralyze self by disabling all player applied forces
+		for i, force in pairs(PLAYER_APPLIED_FORCES) do
+			self.forces[force] = nil
+		end
+
+		-- if time is up
+		if self.paralyzeTime > HIT_PARALIZE_TIME then
+			-- reset the time
+			self.paralyzeTime = -1
+
+			-- add the appropriate forces for every pressed key
+			for i, force in pairs(PLAYER_APPLIED_FORCES) do
+				if love.keyboard.isDown( force ) then
+					self.forces[force] = FORCES[i]
+				end
+			end
+		end
+	end
+end
+
 function Cat:limitJump(dt)
-	if not (self.forces[SPACE] == nil) then
+	if not (self.forces[JUMP] == nil) then
 		-- update jump time when jumping
 		self.jumpTime = self.jumpTime + dt
 		-- by the time self.jumpTime is 10%,20%,..,100% of MAX_JUMP_TIME
 		-- this will reduce the jump force by 10%,20%,..,100%
-		self.forces[SPACE].y = math.clamp(
-			self.forces[SPACE].y - ((JUMPING_FORCE * dt) / MAX_JUMP_TIME), self.forces[SPACE].y, 0)
+		self.forces[JUMP].y = math.clamp(
+			self.forces[JUMP].y - ((JUMPING_FORCE * dt) / MAX_JUMP_TIME), self.forces[JUMP].y, 0)
 	end
 
 	-- stop jump force when max jump time reached
 	if (self.jumpTime > MAX_JUMP_TIME) then
-		self.forces[SPACE] = nil
+		self.forces[JUMP] = nil
 	end
 end
 
-	function Cat:calculatePosition(dt, acceleration)
+function Cat:calculatePosition(dt, acceleration)
 	local position = {x = 0, y = 0}
 	local x1,y1, x2,y2 = self.shape:bbox()
 
@@ -68,36 +99,21 @@ function Cat:collide(otherObject)
 		-- reset jumping
 		self.jumpTime = 0
 	elseif instanceOf(Enemy, otherObject) then
-
-		local ccx, ccy = self.shape:center()
-		local x1, y1, x2, y2 = self.shape:bbox()
-		local cw , ch = x2 - x1, y2 - y1
-		local tcx, tcy = otherObject.shape:center()
-		local x1, y1, x2, y2 = otherObject.shape:bbox()
-		local tw , th = x2 - x1, y2 - y1
-		local fx, fy = 0, 0
-
-		if ((ccx > tcx) and ((ccx - cw/2) < (tcx + tw/2))) then
-			fx = -50*JUMPING_FORCE
-			fy = 25*JUMPING_FORCE
-			self.speed.x = -self.speed.x
-		elseif ((ccx < tcx) and ((ccx + cw/2) > (tcx - tw/2))) then
-			fx = 50*JUMPING_FORCE
-			fy = 25*JUMPING_FORCE
-			self.speed.x = -self.speed.x
-		end
-
+		local fx = 10*JUMPING_FORCE
+		if ((self.shape:center() > otherObject.shape:center()))then fx = -fx end
+		self.speed.x = -0.1*self.speed.x
 		-- apply otherObject's force on self
-		self.forces[otherObject] = {x = fx, y = fy}
-
-
+		self.forces[otherObject] = {x = fx, y = JUMPING_FORCE}
+		LivingObject.takeHit(self)
+		-- paralyze self
+		self.paralyzeTime = 0
 	elseif otherObject == turtle then
 		local ccx, ccy = self.shape:center()
 		local x1, y1, x2, y2 = self.shape:bbox()
-		local cw , ch = x2 - x1, y2 - y1
+		local ch = y2 - y1
 		local tcx, tcy = otherObject.shape:center()
 		local x1, y1, x2, y2 = otherObject.shape:bbox()
-		local tw , th = x2 - x1, y2 - y1
+		local th = y2 - y1
 		local fx, fy = 0, 0
 
 		-- if cat is directly above turtle
@@ -112,15 +128,12 @@ function Cat:collide(otherObject)
 			self.jumpTime = 0
 
 			-- start walking
-			turtle.forces["walk"] = {x = WALKING_FORCE, y = 0}
-			self.forces["ride"] = {x = WALKING_FORCE, y = 0}
-			-- if cat is to turtle's right
-		elseif ((ccx > tcx) and ((ccx - cw/2) < (tcx + tw/2))) then
+			turtle.forces[WALK] = {x = WALKING_FORCE, y = 0}
+			self.forces[RIDE] = {x = WALKING_FORCE, y = 0}
+		-- if cat is to turtle's side
+		else
 			fx = RUNNING_FORCE
-			self.speed.x = -0.1*self.speed.x
-			-- if cat is to turtle's left
-		elseif ((ccx < tcx) and ((ccx + cw/2) > (tcx - tw/2))) then
-			fx = -RUNNING_FORCE
+			if ccx < tcx then fx = -fx end
 			self.speed.x = -0.1*self.speed.x
 		end
 
@@ -131,15 +144,12 @@ end
 
 function Cat:rebound(otherObject)
 	-- remove otherObject's force on self
-	if otherObject == earth then
-		self.forces[otherObject] = nil
-	elseif instanceOf(Enemy, otherObject) then
-		self.forces[otherObject] = nil
-	elseif otherObject == turtle then
-		self.forces[otherObject] = nil
+	self.forces[otherObject] = nil
+
+	if otherObject == turtle then
 		-- stop walking
-		turtle.forces["walk"] = nil
-		self.forces["ride"] = nil
+		turtle.forces[WALK] = nil
+		self.forces[RIDE] = nil
 	end
 end
 

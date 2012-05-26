@@ -4,7 +4,7 @@ LivingObject = class("LivingObject", GameObject)
 
 function LivingObject:initialize(shape)
 	GameObject.initialize(self, shape)
-	self.health = 10
+	self.health = 50
 end
 
 function LivingObject:update(dt)
@@ -45,10 +45,20 @@ function LivingObject:calculateSpeed(dt, acceleration)
 	return speed
 end
 
+function LivingObject:takeHit()
+	-- todo: add dynamic damage
+	local damage = 10
+	self.health = self.health - damage
+
+	if self.health < 1 then
+		self:die()
+	end
+end
+
 function LivingObject:die()
 	-- remove self from the world (the collider) and from the game
 	collider:remove(self.shape)
-	game.objects[self:__tostring()] = nil
+	game.objects[tostring(self)] = nil
 end
 
 function LivingObject:__tostring()
