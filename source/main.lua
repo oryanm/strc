@@ -27,9 +27,12 @@ function love.load()
 	cat = Cat:new(collider:addRectangle(900, 300, 20, 20))
 
 	game.objects['earth'] = earth
-	game.objects['Turtle'] = turtle
-	game.objects['Cat'] = cat
---	game.objects['Enemy'] = Enemy:new(collider:addRectangle(930, 300, 20, 20))
+	game.objects[tostring(turtle)] = turtle
+	game.objects[tostring(cat)] = cat
+
+	local enemy = Enemy:new(collider:addRectangle(camera._x + 930, camera._y + 300, 100, 20))
+	game.objects[tostring(enemy)] = enemy
+
 end
 
 function love.update(dt)
@@ -47,7 +50,21 @@ function love.update(dt)
 		v:update(dt)
 	end
 
+--	spawnEnemies(dt)
+
 	positionCamera(20, 50)
+end
+
+local spawnTime = 0
+
+function spawnEnemies(dt)
+	spawnTime = spawnTime + dt
+
+	if (spawnTime > 0.5) then
+		spawnTime = 0
+		local enemy = Enemy:new(collider:addRectangle(camera._x + 930, camera._y + 300, 20, 20))
+		game.objects[tostring(enemy)] = enemy
+	end
 end
 
 function on_collide(dt, shape_a, shape_b)
@@ -115,11 +132,11 @@ end
 
 function love.keypressed(key, unicode)
 	if key == 'right' then
-		cat.forces[key] = {x = RUNNING_FORCE, y = 0}
+		cat.forces[MOVE_RIGHT] = {x = RUNNING_FORCE, y = 0}
 	elseif key == 'left' then
-		cat.forces[key] = {x = -RUNNING_FORCE, y = 0}
+		cat.forces[MOVE_LEFT] = {x = -RUNNING_FORCE, y = 0}
 	elseif key == ' ' or key == 'up' then
-		cat.forces[SPACE] = {x = 0, y = JUMPING_FORCE}
+		cat.forces[JUMP] = {x = 0, y = JUMPING_FORCE}
 	elseif key == 'p' then
 		game.pause = not game.pause
 	elseif key == "escape" then
@@ -129,11 +146,11 @@ end
 
 function love.keyreleased(key)
    if key == 'left' then
-		cat.forces[key] = nil
+		cat.forces[MOVE_LEFT] = nil
 	elseif key == 'right' then
-		cat.forces[key] = nil
+		cat.forces[MOVE_RIGHT] = nil
 	elseif key == ' ' or key == 'up' then
-		cat.forces[SPACE] = nil
+		cat.forces[JUMP] = nil
 	elseif key == 'f11' then
 		 toggleFullscreen()
 	end
