@@ -8,6 +8,7 @@ function GameObject:initialize(shape)
 	self.forces = {}
 	self.speed = {x = 0, y = 0}
 	self.maxSpeed = 300
+	self.damage = 0
 end
 
 function GameObject:update(dt)

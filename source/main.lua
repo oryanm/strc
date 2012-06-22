@@ -7,6 +7,7 @@ require('LivingObject')
 require('Turtle')
 require('Cat')
 require('Enemy')
+require('Weapon')
 
 collider = nil
 
@@ -23,6 +24,7 @@ function love.load()
 	game:start()
 
 	earth = GameObject:new(collider:addRectangle(0, game:mapHeight() - 20, game:mapWidth(), 20))
+	collider:setPassive(earth.shape)
 	turtle = Turtle:new(collider:addRectangle(50, 300, 100, 70))
 	cat = Cat:new(collider:addRectangle(900, 300, 20, 20))
 
@@ -32,7 +34,7 @@ function love.load()
 
 	local enemy = Enemy:new(collider:addRectangle(camera._x + 930, camera._y + 300, 100, 20))
 	game.objects[tostring(enemy)] = enemy
-
+	collider:addToGroup("Enemies", enemy.shape)
 end
 
 function love.update(dt)
@@ -40,6 +42,7 @@ function love.update(dt)
 	if game.pause then return end
 
 	-- don't know what it does but it helps
+	-- if something takes too long we also suspend game logic. i think
 	dt = math.min(dt, 0.01)
 
 	-- check for collisions
@@ -50,7 +53,7 @@ function love.update(dt)
 		v:update(dt)
 	end
 
---	spawnEnemies(dt)
+	spawnEnemies(dt)
 
 	positionCamera(20, 50)
 end
@@ -63,6 +66,7 @@ function spawnEnemies(dt)
 	if (spawnTime > 0.5) then
 		spawnTime = 0
 		local enemy = Enemy:new(collider:addRectangle(camera._x + 930, camera._y + 300, 20, 20))
+		collider:addToGroup("Enemies", enemy.shape)
 		game.objects[tostring(enemy)] = enemy
 	end
 end
@@ -132,11 +136,15 @@ end
 
 function love.keypressed(key, unicode)
 	if key == 'right' then
-		cat.forces[MOVE_RIGHT] = {x = RUNNING_FORCE, y = 0}
+		cat.forces[MOVE_RIGHT] = {x = RUNNING_FORCE, y = 0 }
+		cat.direction = DIRECTION.RIGHT
 	elseif key == 'left' then
 		cat.forces[MOVE_LEFT] = {x = -RUNNING_FORCE, y = 0}
+		cat.direction = DIRECTION.LEFT
 	elseif key == ' ' or key == 'up' then
 		cat.forces[JUMP] = {x = 0, y = JUMPING_FORCE}
+	elseif key == 'z' then
+		cat:attack()
 	elseif key == 'p' then
 		game.pause = not game.pause
 	elseif key == "escape" then
@@ -145,14 +153,15 @@ function love.keypressed(key, unicode)
 end
 
 function love.keyreleased(key)
-   if key == 'left' then
+	if key == 'left' then
 		cat.forces[MOVE_LEFT] = nil
 	elseif key == 'right' then
 		cat.forces[MOVE_RIGHT] = nil
 	elseif key == ' ' or key == 'up' then
 		cat.forces[JUMP] = nil
+	elseif key == 'z' then
 	elseif key == 'f11' then
-		 toggleFullscreen()
+		toggleFullscreen()
 	end
 end
 
@@ -170,6 +179,11 @@ function toggleFullscreen()
 		--TODO: need to find a way to get monitor resolution
 		love.graphics.setMode( 1280, 1024, not fullscreen,  v, f)
 	end
+
+	game.map.height = love.graphics.getHeight()
+	-- reset the camera to fit the new screen size
+	game:setCameraBounds()
+	earth.shape:moveTo(0, game:mapHeight() - 10)
 end
 
 function math.clamp(x, min, max)

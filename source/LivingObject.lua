@@ -5,13 +5,21 @@ LivingObject = class("LivingObject", GameObject)
 function LivingObject:initialize(shape)
 	GameObject.initialize(self, shape)
 	self.health = 50
+	self.damage = 10
+	self.direction = DIRECTION.RIGHT
 end
 
 function LivingObject:update(dt)
 	-- calculate acceleration
 	local acceleration = self:calculateAcceleration()
 	-- move to new position
-	self.shape:move(self:calculatePosition(dt, acceleration))
+	local x,y = self:calculatePosition(dt, acceleration)
+	self.shape:move(x,y)
+
+	if self.weapon ~= nil then
+		self.weapon.shape:move(x,y)
+	end
+
 	-- calculate new speed
 	self.speed = self:calculateSpeed(dt, acceleration)
 end
@@ -45,9 +53,13 @@ function LivingObject:calculateSpeed(dt, acceleration)
 	return speed
 end
 
-function LivingObject:takeHit()
-	-- todo: add dynamic damage
-	local damage = 10
+function LivingObject:attack()
+	if self.weapon ~= nil then
+		self.weapon:attack()
+	end
+end
+
+function LivingObject:takeHit(damage)
 	self.health = self.health - damage
 
 	if self.health < 1 then
@@ -59,6 +71,11 @@ function LivingObject:die()
 	-- remove self from the world (the collider) and from the game
 	collider:remove(self.shape)
 	game.objects[tostring(self)] = nil
+
+	if self.weapon ~= nil then
+		collider:remove(self.weapon.shape)
+		game.objects['weapon'] = nil
+	end
 end
 
 function LivingObject:__tostring()

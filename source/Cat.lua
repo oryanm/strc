@@ -1,5 +1,6 @@
 require 'LivingObject'
 require 'Trailable'
+require 'Weapon'
 
 Cat = class('Cat', LivingObject)
 Cat:include(Trailable)
@@ -9,6 +10,11 @@ function Cat:initialize(shape)
 	self.forces[game.gravity] = {x = 0, y = game.gravity}
 	self.jumpTime = 0
 	self.health = 100
+
+	self.weapon = Weapon:new(collider:addRectangle(900, 300, 5, 30), self)
+	game.objects['weapon'] = self.weapon
+	local x,y = self.shape:center()
+	self.weapon.shape:moveTo(x, y-50)
 
 	-- the time self has been paralyzed.
 	-- -1 when self is not paralyzed
@@ -85,6 +91,11 @@ end
 function Cat:draw()
 	self.shape:draw("fill")
 	self:drawTrail()
+
+	local x1,y1, x2,y2 = self.shape:bbox()
+	love.graphics.print("(" ..
+		string.format("%.1f", x1) .. ", " ..
+		string.format("%.1f", y1) .. ")", x2, y2)
 end
 
 function Cat:collide(otherObject)
@@ -104,9 +115,6 @@ function Cat:collide(otherObject)
 		self.speed.x = -0.1*self.speed.x
 		-- apply otherObject's force on self
 		self.forces[otherObject] = {x = fx, y = JUMPING_FORCE}
-		LivingObject.takeHit(self)
-		-- paralyze self
-		self.paralyzeTime = 0
 	elseif otherObject == turtle then
 		local ccx, ccy = self.shape:center()
 		local x1, y1, x2, y2 = self.shape:bbox()
@@ -150,6 +158,10 @@ function Cat:rebound(otherObject)
 		-- stop walking
 		turtle.forces[WALK] = nil
 		self.forces[RIDE] = nil
+	elseif instanceOf(Enemy, otherObject) then
+		-- paralyze self
+		self.paralyzeTime = 0
+		LivingObject.takeHit(self, otherObject.damage)
 	end
 end
 
