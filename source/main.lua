@@ -2,6 +2,7 @@ HardonCollider = require ('hardoncollider')
 require('camera')
 require('const')
 require('game')
+require('keyboard')
 require('GameObject')
 require('LivingObject')
 require('Turtle')
@@ -135,55 +136,16 @@ function drawHUD()
 end
 
 function love.keypressed(key, unicode)
-	if key == 'right' then
-		cat.forces[MOVE_RIGHT] = {x = RUNNING_FORCE, y = 0 }
-		cat.direction = DIRECTION.RIGHT
-	elseif key == 'left' then
-		cat.forces[MOVE_LEFT] = {x = -RUNNING_FORCE, y = 0}
-		cat.direction = DIRECTION.LEFT
-	elseif key == ' ' or key == 'up' then
-		cat.forces[JUMP] = {x = 0, y = JUMPING_FORCE}
-	elseif key == 'z' then
-		cat:attack()
-	elseif key == 'p' then
-		game.pause = not game.pause
-	elseif key == "escape" then
-      love.event.push("quit")
-	end
+	keyboard:press(key)
 end
 
 function love.keyreleased(key)
-	if key == 'left' then
-		cat.forces[MOVE_LEFT] = nil
-	elseif key == 'right' then
-		cat.forces[MOVE_RIGHT] = nil
-	elseif key == ' ' or key == 'up' then
-		cat.forces[JUMP] = nil
-	elseif key == 'z' then
-	elseif key == 'f11' then
-		toggleFullscreen()
-	end
+	keyboard:release(key)
 end
 
 function love.focus(f)
 	-- pause the game when out of focus
 	game.pause = not f
-end
-
-function toggleFullscreen()
-	local w, h, fullscreen, v, f = love.graphics.getMode()
-
-	if fullscreen then
-		love.graphics.setMode( 1000, 500, not fullscreen,  v, f)
-	else
-		--TODO: need to find a way to get monitor resolution
-		love.graphics.setMode( 1280, 1024, not fullscreen,  v, f)
-	end
-
-	game.map.height = love.graphics.getHeight()
-	-- reset the camera to fit the new screen size
-	game:setCameraBounds()
-	earth.shape:moveTo(0, game:mapHeight() - 10)
 end
 
 function math.clamp(x, min, max)
