@@ -13,11 +13,11 @@ function LivingObject:update(dt)
 	-- calculate acceleration
 	local acceleration = self:calculateAcceleration()
 	-- move to new position
-	local x,y = self:calculatePosition(dt, acceleration)
-	self.shape:move(x,y)
+	local delta = self:calculatePositionDelta(dt, acceleration)
+	self.shape:move(delta.x, delta.y)
 
 	if self.weapon ~= nil then
-		self.weapon.shape:move(x,y)
+		self.weapon.shape:move(delta.x, delta.y)
 	end
 
 	-- calculate new speed
@@ -35,13 +35,13 @@ function LivingObject:calculateAcceleration()
 	return acceleration
 end
 
-function LivingObject:calculatePosition(dt, acceleration)
+function LivingObject:calculatePositionDelta(dt, acceleration)
 	local position = {x = 0, y = 0}
 
 	position.x = self.speed.x * dt + (acceleration.x * dt * dt)/2
 	position.y = self.speed.y * dt + (acceleration.y * dt * dt)/2
 
-	return position.x, position.y
+	return position
 end
 
 function LivingObject:calculateSpeed(dt, acceleration)

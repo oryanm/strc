@@ -54,7 +54,7 @@ function Cat:paralyze(dt)
 end
 
 function Cat:limitJump(dt)
-	if not (self.forces[JUMP] == nil) then
+	if (self.forces[JUMP] ~= nil) then
 		-- update jump time when jumping
 		self.jumpTime = self.jumpTime + dt
 		-- by the time self.jumpTime is 10%,20%,..,100% of MAX_JUMP_TIME
@@ -69,23 +69,26 @@ function Cat:limitJump(dt)
 	end
 end
 
-function Cat:calculatePosition(dt, acceleration)
-	local position = {x = 0, y = 0}
-	local x1,y1, x2,y2 = self.shape:bbox()
+function Cat:calculatePositionDelta(dt, acceleration)
+	return self:boundToScreen(
+		LivingObject.calculatePositionDelta(self, dt, acceleration))
+end
 
-	position.x, position.y = LivingObject.calculatePosition(self, dt, acceleration)
+-- bound the cat in the screen (horizontally)
+-- vertically the cat will be bounded by earth and gravity
+function Cat:boundToScreen(positionDelta)
+	local x1, y1, x2, y2 = self.shape:bbox()
 
-	-- bound the cat in the screen (horizontally)
-	-- vertically the cat will be bounded by earth and gravity
-	if (x1+position.x > (camera._x + game:screenWidth()) -(x2-x1)) then
-		position.x=-1
+	-- if out of bounds
+	if ((x1 + positionDelta.x) < camera._x) or
+		((x2 + positionDelta.x) > (camera._x + game:screenWidth())) then
+		-- reverse and reduce speed
 		self.speed.x = -0.1*self.speed.x
-	elseif (x1+position.x < camera._x) then
-		position.x=1
-		self.speed.x = -0.1*self.speed.x
+		-- bump cat back against the screen
+		positionDelta.x = self.speed.x > 0 and 1 or -1
 	end
 
-	return position.x, position.y
+	return positionDelta
 end
 
 function Cat:draw()
