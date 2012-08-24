@@ -4,7 +4,7 @@ Turtle = class('Turtle', LivingObject)
 
 function Turtle:initialize(shape)
 	LivingObject.initialize(self, shape)
-	self.forces[game.gravity] = {x = 0, y = game.gravity}
+	self.forces[game.gravity] = vector.new(0, game.gravity)
 end
 
 function Turtle:draw()
@@ -14,7 +14,7 @@ end
 function Turtle:collide(otherObject)
 	if otherObject == earth then
 		-- add earth force to counter gravity
-		self.forces[otherObject] = {x = 0, y = -game.gravity}
+		self.forces[otherObject] = vector.new(0, -game.gravity)
 
 		-- apply collision affect on speed
 		local restitution = 0.1

@@ -7,7 +7,7 @@ Cat:include(Trailable)
 
 function Cat:initialize(shape)
 	LivingObject.initialize(self, shape)
-	self.forces[game.gravity] = {x = 0, y = game.gravity}
+	self.forces[game.gravity] = vector.new(0, game.gravity)
 	self.jumpTime = 0
 	self.health = 100
 
@@ -60,7 +60,8 @@ function Cat:limitJump(dt)
 		-- by the time self.jumpTime is 10%,20%,..,100% of MAX_JUMP_TIME
 		-- this will reduce the jump force by 10%,20%,..,100%
 		self.forces[JUMP].y = math.clamp(
-			self.forces[JUMP].y - ((JUMPING_FORCE * dt) / MAX_JUMP_TIME), self.forces[JUMP].y, 0)
+			self.forces[JUMP].y - ((JUMPING_FORCE * dt) / MAX_JUMP_TIME),
+			self.forces[JUMP].y, 0)
 	end
 
 	-- stop jump force when max jump time reached
@@ -104,7 +105,7 @@ end
 function Cat:collide(otherObject)
 	if otherObject == earth then
 		-- add earth force to counter gravity
-		self.forces[otherObject] = {x = 0, y = -game.gravity}
+		self.forces[otherObject] = vector.new(0, -game.gravity)
 
 		-- apply collision affect on speed
 		self.speed.y = -0.1*self.speed.y
@@ -117,7 +118,7 @@ function Cat:collide(otherObject)
 		if ((self.shape:center() > otherObject.shape:center()))then fx = -fx end
 		self.speed.x = -0.1*self.speed.x
 		-- apply otherObject's force on self
-		self.forces[otherObject] = {x = fx, y = JUMPING_FORCE}
+		self.forces[otherObject] = vector.new(fx, JUMPING_FORCE)
 	elseif otherObject == turtle then
 		local ccx, ccy = self.shape:center()
 		local x1, y1, x2, y2 = self.shape:bbox()
@@ -139,8 +140,8 @@ function Cat:collide(otherObject)
 			self.jumpTime = 0
 
 			-- start walking
-			turtle.forces[WALK] = {x = WALKING_FORCE, y = 0}
-			self.forces[RIDE] = {x = WALKING_FORCE, y = 0}
+			turtle.forces[WALK] = vector.new(WALKING_FORCE, 0)
+			self.forces[RIDE] = vector.new(WALKING_FORCE, 0)
 		-- if cat is to turtle's side
 		else
 			fx = RUNNING_FORCE
@@ -149,7 +150,7 @@ function Cat:collide(otherObject)
 		end
 
 		-- apply otherObject's force on self
-		self.forces[otherObject] = {x = fx, y = fy}
+		self.forces[otherObject] = vector.new(fx, fy)
 	end
 end
 

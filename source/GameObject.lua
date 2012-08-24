@@ -6,8 +6,8 @@ function GameObject:initialize(shape)
 	self.shape = shape
 	shape.object = self
 	self.forces = {}
-	self.speed = {x = 0, y = 0}
-	self.maxSpeed = {x = 300, y = 600}
+	self.speed = vector.new()
+	self.maxSpeed = vector.new(300, 600)
 	self.damage = 0
 end
 

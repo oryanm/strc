@@ -25,30 +25,23 @@ function LivingObject:update(dt)
 end
 
 function LivingObject:calculateAcceleration()
-	local acceleration = {x = 0, y = 0}
+	local acceleration = vector.new()
 
 	for k in pairs(self.forces) do
-		acceleration.x = acceleration.x + self.forces[k].x
-		acceleration.y = acceleration.y + self.forces[k].y
+		acceleration = acceleration + self.forces[k]
 	end
 
 	return acceleration
 end
 
 function LivingObject:calculatePositionDelta(dt, acceleration)
-	local position = {x = 0, y = 0}
-
-	position.x = self.speed.x * dt + (acceleration.x * dt * dt)/2
-	position.y = self.speed.y * dt + (acceleration.y * dt * dt)/2
-
-	return position
+	return self.speed * dt + (acceleration * dt * dt)/2
 end
 
 function LivingObject:calculateSpeed(dt, acceleration)
-	local speed = {x = 0, y = 0}
-
-	speed.x = math.clamp(AIR_FRICTION*self.speed.x + acceleration.x * dt, -self.maxSpeed.x, self.maxSpeed.x)
-	speed.y = math.clamp(AIR_FRICTION*self.speed.y + acceleration.y * dt, -self.maxSpeed.y, self.maxSpeed.y)
+	local speed = self.speed + acceleration * dt
+	speed.x = math.clamp(speed.x, -self.maxSpeed.x, self.maxSpeed.x)
+	speed.y = math.clamp(speed.y, -self.maxSpeed.y, self.maxSpeed.y)
 
 	return speed
 end

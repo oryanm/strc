@@ -13,7 +13,7 @@ Trailable =
 
 	addTrail = function(self)
 		local ccx, ccy = self.shape:center()
-		table.insert(trail, {x = ccx, y = ccy})
+		table.insert(trail, vector.new(ccx, ccy))
 
 		if (table.getn(trail) > MAX_SIZE) then
 			table.remove(trail, 1)
