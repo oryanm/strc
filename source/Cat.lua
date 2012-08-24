@@ -45,7 +45,7 @@ function Cat:paralyze(dt)
 
 			-- add the appropriate forces for every pressed key
 			for i, force in pairs(PLAYER_APPLIED_FORCES) do
-				if love.keyboard.isDown( force ) then
+				if love.keyboard.isDown(force) then
 					self.forces[force] = FORCES[i]
 				end
 			end

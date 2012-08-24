@@ -47,8 +47,8 @@ end
 function LivingObject:calculateSpeed(dt, acceleration)
 	local speed = {x = 0, y = 0}
 
-	speed.x = math.clamp(AIR_FRICTION*self.speed.x + acceleration.x * dt, -self.maxSpeed, self.maxSpeed)
-	speed.y = math.clamp(AIR_FRICTION*self.speed.y + acceleration.y * dt, -self.maxSpeed, self.maxSpeed)
+	speed.x = math.clamp(AIR_FRICTION*self.speed.x + acceleration.x * dt, -self.maxSpeed.x, self.maxSpeed.x)
+	speed.y = math.clamp(AIR_FRICTION*self.speed.y + acceleration.y * dt, -self.maxSpeed.y, self.maxSpeed.y)
 
 	return speed
 end

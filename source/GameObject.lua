@@ -7,7 +7,7 @@ function GameObject:initialize(shape)
 	shape.object = self
 	self.forces = {}
 	self.speed = {x = 0, y = 0}
-	self.maxSpeed = 300
+	self.maxSpeed = {x = 300, y = 600}
 	self.damage = 0
 end
 
