@@ -3,7 +3,7 @@ keyboard.keys = {}
 keyboard.keys.right		= {}
 keyboard.keys.left 		= {}
 keyboard.keys.up 			= {}
-keyboard.keys[" "] 		= {}
+keyboard.keys[' '] 		= {}
 keyboard.keys.z 			= {}
 keyboard.keys.p				= {}
 keyboard.keys.f11			= {}
@@ -48,13 +48,13 @@ local function pauseGame()
 end
 
 local function quitGame()
-	love.event.push("quit")
+	love.event.push('quit')
 end
 
 keyboard.keys.right.pressed		= moveRight
 keyboard.keys.left.pressed 		= moveLeft
 keyboard.keys.up.pressed 			= jump
-keyboard.keys[" "].pressed 		= jump
+keyboard.keys[' '].pressed 		= jump
 keyboard.keys.z.pressed 			= attack
 keyboard.keys.p.pressed				= pauseGame
 keyboard.keys.escape.pressed 	= quitGame
@@ -62,7 +62,7 @@ keyboard.keys.escape.pressed 	= quitGame
 keyboard.keys.right.released	= afterMoveRight
 keyboard.keys.left.released		= afterMoveLeft
 keyboard.keys.up.released			= afterJump
-keyboard.keys[" "].released		= afterJump
+keyboard.keys[' '].released		= afterJump
 keyboard.keys.f11.released		= toggleFullscreen
 
 function keyboard:press(key)
