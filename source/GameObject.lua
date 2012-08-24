@@ -27,3 +27,14 @@ end
 function GameObject:__tostring()
 	return "this is an abstarct game object"
 end
+
+
+Earth = class('Earth', GameObject)
+
+function Earth:initialize(shape)
+	GameObject.initialize(self, shape)
+end
+
+function Earth:__tostring()
+	return "Earth"
+end

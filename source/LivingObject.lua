@@ -27,8 +27,8 @@ end
 function LivingObject:calculateAcceleration()
 	local acceleration = vector.new()
 
-	for k in pairs(self.forces) do
-		acceleration = acceleration + self.forces[k]
+	for k, force in pairs(self.forces) do
+		acceleration = acceleration + force
 	end
 
 	return acceleration

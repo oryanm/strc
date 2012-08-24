@@ -13,17 +13,17 @@ keyboard.keys.f11			= {}
 keyboard.keys.escape 	= {}
 
 local function moveRight()
-	cat.forces[MOVE_RIGHT] = vector.new(RUNNING_FORCE, 0)
+	cat.forces[MOVE_RIGHT] = FORCES.MOVE_RIGHT
 	cat.direction = DIRECTION.RIGHT
 end
 
 local function moveLeft()
-	cat.forces[MOVE_LEFT] = vector.new(-RUNNING_FORCE, 0)
+	cat.forces[MOVE_LEFT] = FORCES.MOVE_LEFT
 	cat.direction = DIRECTION.LEFT
 end
 
 local function jump()
-	cat.forces[JUMP] = vector.new(0, JUMPING_FORCE)
+	cat.forces[JUMP] = FORCES.JUMP
 end
 
 local function afterMoveRight()

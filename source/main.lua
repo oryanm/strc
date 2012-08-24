@@ -1,9 +1,10 @@
 HardonCollider = require ('hardoncollider')
 vector = require('hump.vector')
 require('camera')
-require('const')
 require('game')
 require('keyboard')
+require('const')
+require('force')
 require('GameObject')
 require('LivingObject')
 require('Turtle')
@@ -25,18 +26,15 @@ function love.load()
 
 	game:start()
 
-	earth = GameObject:new(collider:addRectangle(0, game:mapHeight() - 20, game:mapWidth(), 20))
+	earth = Earth:new(collider:addRectangle(0, game:mapHeight() - 20, game:mapWidth(), 20))
 	collider:setPassive(earth.shape)
 	turtle = Turtle:new(collider:addRectangle(50, 300, 100, 70))
 	cat = Cat:new(collider:addRectangle(400, 100, 20, 20))
+	cat.__tostring = function() return 'alals' end
 
-	game.objects['earth'] = earth
+	game.objects[tostring(earth)] = earth
 	game.objects[tostring(turtle)] = turtle
 	game.objects[tostring(cat)] = cat
-
-	local enemy = Enemy:new(collider:addRectangle(camera._x + 930, camera._y + 300, 100, 20))
-	game.objects[tostring(enemy)] = enemy
-	collider:addToGroup("Enemies", enemy.shape)
 end
 
 function love.update(dt)
@@ -103,6 +101,7 @@ function love.draw()
 	end
 
 	drawHUD()
+	--print('Memory actually used (in kB): ' .. collectgarbage('count'))
 
 	camera:unset()
 end
@@ -123,14 +122,13 @@ function drawHUD()
 		string.format("%07.3f", cat.speed.x) .. ", " ..
 		string.format("%07.3f", cat.speed.y) .. ")")
 
-	local fx,fy= 0, 0
-	for k in pairs(cat.forces) do
-		fx = fx + cat.forces[k].x
-		fy = fy + cat.forces[k].y
+	local vector = vector.new()
+	for k, force in pairs(cat.forces) do
+		vector = vector + force
 	end
 	printToHUD("f : (" ..
-		string.format("%012.3f", fx) .. ", " ..
-		string.format("%012.3f", fy) .. ")")
+		string.format("%012.3f", vector.x) .. ", " ..
+		string.format("%012.3f", vector.y) .. ")")
 
 	love.graphics.print("We choose to go to the moon. We choose to go to the moon in this decade and do the other things, not because they are easy, but because they are hard, because that goal will serve to organize and measure the best of our energies and skills, because that challenge is one that we are willing to accept, one we are unwilling to postpone, and one which we intend to win, and the others, too.", 100, 150)
 	row = 0
