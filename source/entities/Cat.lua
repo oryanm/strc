@@ -85,7 +85,7 @@ function Cat:boundToScreen(positionDelta)
 	if ((x1 + positionDelta.x) < camera._x) or
 		((x2 + positionDelta.x) > (camera._x + game:screenWidth())) then
 		-- reverse and reduce speed
-		self.speed.x = -0.1*self.speed.x
+		self.speed.x = -RESTITUTION*self.speed.x
 		-- bump cat back against the screen
 		positionDelta.x = self.speed.x > 0 and 1 or -1
 	end
@@ -104,54 +104,54 @@ function Cat:draw()
 end
 
 function Cat:collide(otherObject)
+	local f
+
 	if otherObject == earth then
-		-- add earth force to counter gravity
-		self.forces[otherObject.name] = FORCES.EARTH
-
-		-- apply collision affect on speed
-		self.speed.y = -0.1*self.speed.y
-		self.speed.x = SURFACE_FRICTION*self.speed.x
-
-		-- reset jumping
-		self.jumpTime = 0
+		f = self:collideWithEarth()
 	elseif instanceOf(Enemy, otherObject) or instanceOf(Weapon, otherObject) then
-		local fx = 10 * JUMPING_FORCE
-		if ((self.shape:center() > otherObject.shape:center())) then fx = -fx end
-		self.speed.x = -0.1*self.speed.x
-		-- apply otherObject's force on self
-		self.forces[otherObject.name] = vector.new(fx, JUMPING_FORCE)
+		-- bump back
+		self.speed.x = -RESTITUTION*self.speed.x
+		f = vector.new(math.sign(otherObject.shape:center() -
+			self.shape:center()) * 10 * JUMPING_FORCE, JUMPING_FORCE)
 	elseif otherObject == turtle then
-		local ccx, ccy = self.shape:center()
-		local x1, y1, x2, y2 = self.shape:bbox()
-		local ch = y2 - y1
-		local tcx, tcy = otherObject.shape:center()
-		local x1, y1, x2, y2 = otherObject.shape:bbox()
-		local th = y2 - y1
-		local fx, fy = 0, 0
+		f = self:collideWithTurtle(otherObject)
+	end
 
-		-- if cat is directly above turtle
-		if ((ccy + (ch/2) - 5) < (tcy - (th/2))) then
-			-- add force to counter gravity
-			fy = -game.gravity
-			-- apply collision affect on speed
-			self.speed.y = -0.1*self.speed.y
-			self.speed.x = SURFACE_FRICTION*self.speed.x
+	-- apply otherObject's force on self
+	self.forces[otherObject.name] = f
+end
 
-			-- reset jumping
-			self.jumpTime = 0
+function Cat:collideWithEarth(otherObject)
+	-- apply collision affect on speed
+	self.speed = self.speed:permul(vector.new(SURFACE_FRICTION, -RESTITUTION))
+	-- reset jumping
+	self.jumpTime = 0
 
-			-- start walking
-			turtle.forces[WALK] = FORCES.WALK
-			self.forces[RIDE] = FORCES.RIDE
+	-- add earth force to counter gravity
+	return FORCES.EARTH
+end
+
+function Cat:collideWithTurtle(otherObject)
+	local ccx, ccy = self.shape:center()
+	local x1, y1, x2, y2 = self.shape:bbox()
+	local ch = y2 - y1
+	local tcx, tcy = otherObject.shape:center()
+	local x1, y1, x2, y2 = otherObject.shape:bbox()
+	local th = y2 - y1
+
+	-- if cat is directly above turtle
+	if ((ccy + (ch/2) - 10) < (tcy - (th/2))) then
+		-- start walking
+		turtle.forces[WALK] = FORCES.WALK
+		self.forces[RIDE] = FORCES.RIDE
+
+		-- same effect as colliding with earth
+		return self:collideWithEarth()
 		-- if cat is to turtle's side
-		else
-			fx = RUNNING_FORCE
-			if ccx < tcx then fx = -fx end
-			self.speed.x = -0.1*self.speed.x
-		end
+	else
+		self.speed.x = -RESTITUTION*self.speed.x
 
-		-- apply otherObject's force on self
-		self.forces[otherObject.name] = vector.new(fx, fy)
+		return ccx < tcx and FORCES.MOVE_LEFT or FORCES.MOVE_RIGHT
 	end
 end
 

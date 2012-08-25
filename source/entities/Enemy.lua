@@ -16,21 +16,22 @@ function Enemy:draw()
 end
 
 function Enemy:collide(otherObject)
+	local f
+
 	if otherObject == earth then
 		-- add earth force to counter gravity
-		self.forces[otherObject.name] = FORCES.EARTH
-
+		f = FORCES.EARTH
 		-- apply collision affect on speed
-		local restitution = 0.1
-		self.speed.y = -restitution*self.speed.y
-		self.speed.x = SURFACE_FRICTION*self.speed.x
+		self.speed = self.speed:permul(vector.new(SURFACE_FRICTION, -RESTITUTION))
 	elseif otherObject == turtle or otherObject == cat or instanceOf(Weapon, otherObject) then
-		local fx = 10*WALKING_FORCE
-		if ((self.shape:center() < otherObject.shape:center()))then fx = -fx end
-		self.speed.x = -0.1*self.speed.x
-		-- apply otherObject's force on self
-		self.forces[otherObject.name] = vector.new(fx, -WALKING_FORCE)
+		-- bump back
+		self.speed.x = -RESTITUTION*self.speed.x
+		f = vector.new(math.sign(otherObject.shape:center() -
+			self.shape:center()) * 10 * JUMPING_FORCE, JUMPING_FORCE)
 	end
+
+	-- apply otherObject's force on self
+	self.forces[otherObject.name] = f
 end
 
 function Enemy:rebound(otherObject)

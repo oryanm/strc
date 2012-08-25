@@ -9,8 +9,5 @@ function Weapon:initialize(name, owner, shape)
 	self.damage = 0
 end
 
-function Weapon:update(dt)
-end
-
 function Weapon:attack()
 end

@@ -14,11 +14,8 @@ function Turtle:collide(otherObject)
 	if otherObject == earth then
 		-- add earth force to counter gravity
 		self.forces[otherObject.name] = FORCES.EARTH
-
 		-- apply collision affect on speed
-		local restitution = 0.1
-		self.speed.y = -restitution*self.speed.y
-		self.speed.x = SURFACE_FRICTION*self.speed.x
+		self.speed = self.speed:permul(vector.new(SURFACE_FRICTION, -RESTITUTION))
 	end
 end
 
