@@ -1,5 +1,3 @@
-require 'LivingObject'
-
 Turtle = class('Turtle', LivingObject)
 
 function Turtle:initialize(shape)

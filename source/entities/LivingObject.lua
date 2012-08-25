@@ -1,5 +1,3 @@
-require 'GameObject'
-
 LivingObject = class("LivingObject", GameObject)
 
 function LivingObject:initialize(shape)
@@ -14,10 +12,10 @@ function LivingObject:update(dt)
 	local acceleration = self:calculateAcceleration()
 	-- move to new position
 	local delta = self:calculatePositionDelta(dt, acceleration)
-	self.shape:move(delta.x, delta.y)
+	self.shape:move(delta:unpack())
 
 	if self.weapon ~= nil then
-		self.weapon.shape:move(delta.x, delta.y)
+		self.weapon.shape:move(delta:unpack())
 	end
 
 	-- calculate new speed
@@ -61,9 +59,7 @@ function LivingObject:takeHit(damage)
 end
 
 function LivingObject:die()
-	-- remove self from the world (the collider) and from the game
-	collider:remove(self.shape)
-	game.objects[tostring(self)] = nil
+	GameObject.destroy(self)
 
 	if self.weapon ~= nil then
 		collider:remove(self.weapon.shape)

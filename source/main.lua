@@ -1,16 +1,19 @@
-HardonCollider = require ('hardoncollider')
+HardonCollider = require('hardoncollider')
 vector = require('hump.vector')
+require('middleclass')
 require('camera')
+require('const')
 require('game')
 require('keyboard')
-require('const')
 require('force')
-require('GameObject')
-require('LivingObject')
-require('Turtle')
-require('Cat')
-require('Enemy')
-require('Weapon')
+require('Trailable')
+require('entities.GameObject')
+require('entities.LivingObject')
+require('entities.Turtle')
+require('entities.Cat')
+require('entities.Enemy')
+require('entities.Weapon')
+require('entities.MeleeWeapon')
 
 collider = nil
 
@@ -30,7 +33,6 @@ function love.load()
 	collider:setPassive(earth.shape)
 	turtle = Turtle:new(collider:addRectangle(50, 300, 100, 70))
 	cat = Cat:new(collider:addRectangle(400, 100, 20, 20))
-	cat.__tostring = function() return 'alals' end
 
 	game.objects[tostring(earth)] = earth
 	game.objects[tostring(turtle)] = turtle

@@ -1,5 +1,3 @@
-require('Enemy')
-
 keyboard = {}
 keyboard.keys = {}
 keyboard.keys.right		= {}

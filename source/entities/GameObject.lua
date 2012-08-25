@@ -1,5 +1,3 @@
-require 'middleclass'
-
 GameObject = class("GameObject")
 
 function GameObject:initialize(shape)
@@ -22,6 +20,12 @@ function GameObject:collide(otherObject)
 end
 
 function GameObject:rebound(otherObject)
+end
+
+function GameObject:destroy()
+	-- remove self from the world (the collider) and from the game
+	collider:remove(self.shape)
+	game.objects[tostring(self)] = nil
 end
 
 function GameObject:__tostring()

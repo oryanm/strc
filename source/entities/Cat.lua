@@ -1,7 +1,3 @@
-require 'LivingObject'
-require 'Trailable'
-require 'Weapon'
-
 Cat = class('Cat', LivingObject)
 Cat:include(Trailable)
 
@@ -11,14 +7,16 @@ function Cat:initialize(shape)
 	self.jumpTime = 0
 	self.health = 100
 
-	self.weapon = Weapon:new(collider:addRectangle(900, 300, 5, 30), self)
+	self.weapon = MeleeWeapon:new(collider:addRectangle(900, 300, 5, 100), self)
 	game.objects['weapon'] = self.weapon
-	local x,y = self.shape:center()
-	self.weapon.shape:moveTo(x, y-50)
 
 	-- the time self has been paralyzed.
 	-- -1 when self is not paralyzed
 	self.paralyzeTime = -1
+
+	-- set the trail
+	self.trail = {}
+	self.maxSizeOfTrail = 100
 end
 
 function Cat:update(dt)
@@ -170,4 +168,13 @@ end
 
 function Cat:__tostring()
 	return "Cat"
+end
+
+-- Trailable methods
+function Cat:getTrail()
+	return self.trail
+end
+
+function Cat:getMaxSizeOfTrail() return
+	self.maxSizeOfTrail
 end

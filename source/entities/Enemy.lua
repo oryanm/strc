@@ -1,5 +1,3 @@
-require 'LivingObject'
-
 Enemy = class('Enemy', LivingObject)
 Enemy.sequence = 0
 

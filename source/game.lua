@@ -1,5 +1,3 @@
-require('camera')
-
 game = {}
 game.map = {}
 game.map.width = -1
