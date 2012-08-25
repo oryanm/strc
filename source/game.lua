@@ -10,6 +10,23 @@ function game:start()
 	self:setMapBounds()
 	print(self.map.width .. " " .. self.map.height)
 	self:setCameraBounds()
+
+	earth = Earth:new()
+	turtle = Turtle:new()
+	cat = Cat:new()
+end
+
+function game:stop()
+	for k,v in pairs(self.objects) do
+		v:destroy()
+	end
+
+	collider:clear()
+end
+
+function game:reset()
+	self:stop()
+	self:start()
 end
 
 function game:mapWidth()

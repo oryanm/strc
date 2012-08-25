@@ -24,14 +24,10 @@ cat = nil
 function love.load()
 --	background = love.graphics.newImage("back.png")
 
-	game:start()
-
 	-- create a collider
-	collider = HardonCollider(100, on_collide, done_collide)
+	collider = HardonCollider.new(100, on_collide, done_collide)
 
-	earth = Earth:new()
-	turtle = Turtle:new()
-	cat = Cat:new()
+	game:start()
 end
 
 function love.update(dt)

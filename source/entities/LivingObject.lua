@@ -56,11 +56,11 @@ function LivingObject:takeHit(damage)
 	self.health = self.health - damage
 
 	if self.health < 1 then
-		self:die()
+		self:destroy()
 	end
 end
 
-function LivingObject:die()
+function LivingObject:destroy()
 	GameObject.destroy(self)
 
 	if self.weapon ~= nil then

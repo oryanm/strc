@@ -7,6 +7,7 @@ keyboard.keys[' '] 		= {}
 keyboard.keys.z 			= {}
 keyboard.keys.p				= {}
 keyboard.keys.s				= {}
+keyboard.keys.r				= {}
 keyboard.keys.f11			= {}
 keyboard.keys.escape 	= {}
 
@@ -56,6 +57,10 @@ local function spawnEnemy()
 	Enemy:new()
 end
 
+local function resetGame()
+	game:reset()
+end
+
 keyboard.keys.right.pressed		= moveRight
 keyboard.keys.left.pressed 		= moveLeft
 keyboard.keys.up.pressed 			= jump
@@ -63,6 +68,7 @@ keyboard.keys[' '].pressed 		= jump
 keyboard.keys.z.pressed 			= attack
 keyboard.keys.p.pressed				= pauseGame
 keyboard.keys.s.pressed				= spawnEnemy
+keyboard.keys.r.pressed				= resetGame
 keyboard.keys.escape.pressed 	= quitGame
 
 keyboard.keys.right.released	= afterMoveRight
