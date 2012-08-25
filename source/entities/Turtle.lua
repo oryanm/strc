@@ -1,8 +1,9 @@
 Turtle = class('Turtle', LivingObject)
 
 function Turtle:initialize(shape)
-	LivingObject.initialize(self, shape)
-	self.forces[GRAVITY] = FORCES.GRAVITY
+	LivingObject.initialize(self, 'Turtle', shape or
+		collider:addRectangle(50, 300, 100, 70))
+	self.direction = DIRECTION.RIGHT
 end
 
 function Turtle:draw()
@@ -12,7 +13,7 @@ end
 function Turtle:collide(otherObject)
 	if otherObject == earth then
 		-- add earth force to counter gravity
-		self.forces[tostring(otherObject)] = FORCES.EARTH
+		self.forces[otherObject.name] = FORCES.EARTH
 
 		-- apply collision affect on speed
 		local restitution = 0.1
@@ -22,9 +23,5 @@ function Turtle:collide(otherObject)
 end
 
 function Turtle:rebound(otherObject)
-	self.forces[tostring(otherObject)] = nil
-end
-
-function Turtle:__tostring()
-	return "Turtle"
+	self.forces[otherObject.name] = nil
 end

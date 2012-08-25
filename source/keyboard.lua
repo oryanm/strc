@@ -53,7 +53,7 @@ local function quitGame()
 end
 
 local function spawnEnemy()
-	Enemy.spawn()
+	Enemy:new()
 end
 
 keyboard.keys.right.pressed		= moveRight

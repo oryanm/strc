@@ -1,10 +1,12 @@
 LivingObject = class("LivingObject", GameObject)
 
-function LivingObject:initialize(shape)
-	GameObject.initialize(self, shape)
+function LivingObject:initialize(name, shape)
+	GameObject.initialize(self, name, shape)
+	-- a living object has hp, dp and a direction in life
 	self.health = 50
 	self.damage = 10
-	self.direction = DIRECTION.RIGHT
+	self.direction = DIRECTION.LEFT
+	self.forces[GRAVITY] = FORCES.GRAVITY
 end
 
 function LivingObject:update(dt)
@@ -62,11 +64,6 @@ function LivingObject:die()
 	GameObject.destroy(self)
 
 	if self.weapon ~= nil then
-		collider:remove(self.weapon.shape)
-		game.objects['weapon'] = nil
+		self.weapon:destroy()
 	end
-end
-
-function LivingObject:__tostring()
-	return "this is an abstarct living object"
 end

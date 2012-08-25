@@ -2,13 +2,17 @@ Cat = class('Cat', LivingObject)
 Cat:include(Trailable)
 
 function Cat:initialize(shape)
-	LivingObject.initialize(self, shape)
+	LivingObject.initialize(self, 'Cat', shape or
+		collider:addRectangle(400, 100, 20, 20))
+	collider:addToGroup('Cats', self.shape)
 	self.forces[GRAVITY] = FORCES.GRAVITY
-	self.jumpTime = 0
 	self.health = 100
 
-	self.weapon = MeleeWeapon:new(collider:addRectangle(900, 300, 5, 100), self)
-	game.objects['weapon'] = self.weapon
+	-- the time cat has been in the air
+	self.jumpTime = 0
+
+	self.weapon = MeleeWeapon:new(self)
+	collider:addToGroup('Cats', self.weapon.shape)
 
 	-- the time self has been paralyzed.
 	-- -1 when self is not paralyzed
@@ -102,7 +106,7 @@ end
 function Cat:collide(otherObject)
 	if otherObject == earth then
 		-- add earth force to counter gravity
-		self.forces[tostring(otherObject)] = FORCES.EARTH
+		self.forces[otherObject.name] = FORCES.EARTH
 
 		-- apply collision affect on speed
 		self.speed.y = -0.1*self.speed.y
@@ -110,12 +114,12 @@ function Cat:collide(otherObject)
 
 		-- reset jumping
 		self.jumpTime = 0
-	elseif instanceOf(Enemy, otherObject) then
+	elseif instanceOf(Enemy, otherObject) or instanceOf(Weapon, otherObject) then
 		local fx = 10 * JUMPING_FORCE
 		if ((self.shape:center() > otherObject.shape:center())) then fx = -fx end
 		self.speed.x = -0.1*self.speed.x
 		-- apply otherObject's force on self
-		self.forces[tostring(otherObject)] = vector.new(fx, JUMPING_FORCE)
+		self.forces[otherObject.name] = vector.new(fx, JUMPING_FORCE)
 	elseif otherObject == turtle then
 		local ccx, ccy = self.shape:center()
 		local x1, y1, x2, y2 = self.shape:bbox()
@@ -147,13 +151,13 @@ function Cat:collide(otherObject)
 		end
 
 		-- apply otherObject's force on self
-		self.forces[tostring(otherObject)] = vector.new(fx, fy)
+		self.forces[otherObject.name] = vector.new(fx, fy)
 	end
 end
 
 function Cat:rebound(otherObject)
 	-- remove otherObject's force on self
-	self.forces[tostring(otherObject)] = nil
+	self.forces[otherObject.name] = nil
 
 	if otherObject == turtle then
 		-- stop walking
@@ -164,10 +168,6 @@ function Cat:rebound(otherObject)
 		self.paralyzeTime = 0
 		LivingObject.takeHit(self, otherObject.damage)
 	end
-end
-
-function Cat:__tostring()
-	return "Cat"
 end
 
 -- Trailable methods

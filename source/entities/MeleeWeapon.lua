@@ -1,12 +1,13 @@
 MeleeWeapon = class("MeleeWeapon", Weapon)
 
-function MeleeWeapon:initialize(shape, owner)
-	Weapon.initialize(self, shape, owner)
+function MeleeWeapon:initialize(owner, shape)
+	Weapon.initialize(self, 'MeleeWeapon', owner, shape or
+		collider:addRectangle(900, 300, 5, 100))
 	self.damage = 20
 
 	local x,y = owner.shape:center()
-	shape:moveTo(x, y-20)
-	shape:rotate(math.pi/4*owner.direction, x, y)
+	self.shape:moveTo(x, y-20)
+	self.shape:rotate(math.pi/4*owner.direction, x, y)
 end
 
 function MeleeWeapon:update(dt)
@@ -22,10 +23,6 @@ function MeleeWeapon:update(dt)
 	end
 end
 
-function Weapon:attack()
+function MeleeWeapon:attack()
 	self.attacking = true
-end
-
-function MeleeWeapon:__tostring()
-	return "this is an abstarct melee weapon object"
 end

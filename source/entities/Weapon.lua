@@ -1,7 +1,9 @@
 Weapon = class("Weapon", GameObject)
+Weapon.sequence = 0
 
-function Weapon:initialize(shape, owner)
-	GameObject.initialize(self, shape)
+function Weapon:initialize(name, owner, shape)
+	Weapon.sequence = Weapon.sequence + 1
+	GameObject.initialize(self, name .. '#' .. Weapon.sequence, shape)
 	self.owner = owner
 	self.attacking = false
 	self.damage = 0
@@ -11,8 +13,4 @@ function Weapon:update(dt)
 end
 
 function Weapon:attack()
-end
-
-function Weapon:__tostring()
-	return "this is an abstarct weapon object"
 end

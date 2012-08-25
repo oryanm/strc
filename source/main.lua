@@ -22,21 +22,16 @@ turtle = nil
 cat = nil
 
 function love.load()
-	-- create a collider
-	collider = HardonCollider(100, on_collide, done_collide)
-
 --	background = love.graphics.newImage("back.png")
 
 	game:start()
 
-	earth = Earth:new(collider:addRectangle(0, game:mapHeight() - 20, game:mapWidth(), 20))
-	collider:setPassive(earth.shape)
-	turtle = Turtle:new(collider:addRectangle(50, 300, 100, 70))
-	cat = Cat:new(collider:addRectangle(400, 100, 20, 20))
+	-- create a collider
+	collider = HardonCollider(100, on_collide, done_collide)
 
-	game.objects[tostring(earth)] = earth
-	game.objects[tostring(turtle)] = turtle
-	game.objects[tostring(cat)] = cat
+	earth = Earth:new()
+	turtle = Turtle:new()
+	cat = Cat:new()
 end
 
 function love.update(dt)
@@ -67,7 +62,7 @@ function spawnEnemies(dt)
 
 	if (spawnTime > 0.7) then
 		spawnTime = 0
-		Enemy.spawn()
+		Enemy:new()
 	end
 end
 

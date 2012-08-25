@@ -53,5 +53,6 @@ function game:toggleFullscreen()
 	self.map.height = love.graphics.getHeight()
 	-- reset the camera to fit the new screen size
 	self:setCameraBounds()
-	earth.shape:moveTo(0, self:mapHeight() - 10)
+	local x = earth.shape:center()
+	earth.shape:moveTo(x, self:mapHeight() - 10)
 end
