@@ -21,13 +21,39 @@ function Cat:initialize(shape)
 	-- set the trail
 	self.trail = {}
 	self.maxSizeOfTrail = 100
+
+	self.locked = false
 end
 
 function Cat:update(dt)
+	self:checkForLock(dt)
 	self:paralyze(dt)
 	self:limitJump(dt)
 	LivingObject.update(self, dt)
 	self:addTrail()
+end
+
+function Cat:checkForLock(dt)
+	local x, y = turtle.shape:center()
+	local cx, cy = self.shape:center()
+	self.locked = self.shape:intersectsRay(x, y, 0, -1)
+	if self.locked then
+		self.shape:moveTo(x,cy)
+		self.weapon.shape:moveTo(x,cy)
+	end
+end
+
+function Cat:unlock()
+	self.locked = false
+	local x = turtle.shape:center()
+	local cx, cy = self.shape:center()
+	self.forces[JUMP] = FORCES.JUMP
+	self.shape:moveTo(x+20,cy)
+	-- TODO: fix the way weapons work with this
+	local angle = self.weapon.shape:rotation()
+	self.weapon.shape:rotate(angle)
+	self.weapon.shape:moveTo(x,cy-20)
+	self.weapon.shape:rotate(-angle)
 end
 
 function Cat:paralyze(dt)
@@ -159,7 +185,7 @@ function Cat:rebound(otherObject)
 	-- remove otherObject's force on self
 	self.forces[otherObject.name] = nil
 
-	if otherObject == turtle then
+	if otherObject == turtle and not self.locked then
 		-- stop walking
 		turtle.forces[WALK] = nil
 		self.forces[RIDE] = nil

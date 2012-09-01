@@ -9,9 +9,14 @@ keyboard.keys.p				= {}
 keyboard.keys.s				= {}
 keyboard.keys.r				= {}
 keyboard.keys.f11			= {}
+keyboard.keys.lshift	= {}
 keyboard.keys.escape 	= {}
 
 local function moveRight()
+	if cat.locked and love.keyboard.isDown('lshift') then
+		cat:unlock()
+	end
+
 	cat.forces[MOVE_RIGHT] = FORCES.MOVE_RIGHT
 	cat.direction = DIRECTION.RIGHT
 end
