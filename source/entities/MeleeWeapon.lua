@@ -2,7 +2,7 @@ MeleeWeapon = class("MeleeWeapon", Weapon)
 
 function MeleeWeapon:initialize(owner, shape)
 	Weapon.initialize(self, 'MeleeWeapon', owner, shape or
-		collider:addRectangle(900, 300, 5, 100))
+		collider:addRectangle(0, 0, 5, 100))
 	self.damage = 20
 
 	local x,y = owner.shape:center()

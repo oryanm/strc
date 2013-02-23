@@ -52,6 +52,12 @@ function LivingObject:attack()
 	end
 end
 
+function LivingObject:afterAttack()
+	if self.weapon ~= nil then
+		self.weapon:afterAttack()
+	end
+end
+
 function LivingObject:takeHit(damage)
 	self.health = self.health - damage
 

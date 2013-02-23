@@ -23,7 +23,8 @@ function Enemy:collide(otherObject)
 		f = FORCES.EARTH
 		-- apply collision affect on speed
 		self.speed = self.speed:permul(vector.new(SURFACE_FRICTION, -RESTITUTION))
-	elseif otherObject == turtle or otherObject == cat or instanceOf(Weapon, otherObject) then
+	elseif otherObject == turtle or otherObject == cat or
+		instanceOf(Weapon, otherObject) or instanceOf(Projectile, otherObject) then
 		-- bump back
 		self.speed.x = -RESTITUTION*self.speed.x
 		f = vector.new(math.sign(otherObject.shape:center() -
@@ -36,7 +37,12 @@ end
 
 function Enemy:rebound(otherObject)
 	self.forces[otherObject.name] = nil
-	if otherObject == turtle or otherObject == cat or instanceOf(Weapon, otherObject) then
+	if otherObject == turtle or otherObject == cat or
+		instanceOf(Weapon, otherObject) or instanceOf(Projectile, otherObject) then
 		LivingObject.takeHit(self, otherObject.damage)
+
+		if instanceOf(Projectile, otherObject) then
+			otherObject:destroy()
+		end
 	end
 end

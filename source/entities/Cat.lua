@@ -11,7 +11,8 @@ function Cat:initialize(shape)
 	-- the time cat has been in the air
 	self.jumpTime = 0
 
-	self.weapon = MeleeWeapon:new(self)
+	self.weapon = Gun:new(self)
+--	self.weapon = MeleeWeapon:new(self)
 	collider:addToGroup('Cats', self.weapon.shape)
 
 	-- the time self has been paralyzed.
@@ -27,7 +28,9 @@ end
 
 function Cat:update(dt)
 	self:checkForLock(dt)
-	self:paralyze(dt)
+	if (self.paralyzeTime >= 0) then
+		self:paralyze(dt)
+	end
 	self:limitJump(dt)
 	LivingObject.update(self, dt)
 	self:addTrail()
@@ -39,7 +42,7 @@ function Cat:checkForLock(dt)
 	self.locked = self.shape:intersectsRay(x, y, 0, -1)
 	if self.locked then
 		self.shape:moveTo(x,cy)
-		self.weapon.shape:moveTo(x,cy)
+--		self.weapon.shape:moveTo(x+20,cy)
 	end
 end
 
@@ -50,32 +53,28 @@ function Cat:unlock()
 	self.forces[JUMP] = FORCES.JUMP
 	self.shape:moveTo(x+20,cy)
 	-- TODO: fix the way weapons work with this
-	local angle = self.weapon.shape:rotation()
-	self.weapon.shape:rotate(angle)
-	self.weapon.shape:moveTo(x,cy-20)
-	self.weapon.shape:rotate(-angle)
+--	self.weapon.shape:moveTo(x+40,cy)
 end
 
 function Cat:paralyze(dt)
-	if (self.paralyzeTime >= 0) then
-		-- update paralyze time
-		self.paralyzeTime = self.paralyzeTime + dt
+	-- update paralyze time
+	self.paralyzeTime = self.paralyzeTime + dt
 
-		-- paralyze self by disabling all player applied forces
+	-- TODO: move this to takeHit()
+	-- paralyze self by disabling all player applied forces
+	for i, force in pairs(PLAYER_APPLIED_FORCES) do
+		self.forces[force.key] = nil
+	end
+
+	-- if time is up
+	if self.paralyzeTime > HIT_PARALIZE_TIME then
+		-- reset the time
+		self.paralyzeTime = -1
+
+		-- add the appropriate forces for every pressed key
 		for i, force in pairs(PLAYER_APPLIED_FORCES) do
-			self.forces[force.key] = nil
-		end
-
-		-- if time is up
-		if self.paralyzeTime > HIT_PARALIZE_TIME then
-			-- reset the time
-			self.paralyzeTime = -1
-
-			-- add the appropriate forces for every pressed key
-			for i, force in pairs(PLAYER_APPLIED_FORCES) do
-				if love.keyboard.isDown(force.key) then
-					self.forces[force.key] = force
-				end
+			if love.keyboard.isDown(force.key) then
+				self.forces[force.key] = force
 			end
 		end
 	end
@@ -134,7 +133,8 @@ function Cat:collide(otherObject)
 
 	if otherObject == earth then
 		f = self:collideWithEarth()
-	elseif instanceOf(Enemy, otherObject) or instanceOf(Weapon, otherObject) then
+	elseif instanceOf(Enemy, otherObject) or instanceOf(Weapon, otherObject) or
+		instanceOf(Projectile, otherObject) then
 		-- bump back
 		self.speed.x = -RESTITUTION*self.speed.x
 		f = vector.new(math.sign(otherObject.shape:center() -
@@ -159,10 +159,10 @@ end
 
 function Cat:collideWithTurtle(otherObject)
 	local ccx, ccy = self.shape:center()
-	local x1, y1, x2, y2 = self.shape:bbox()
+	local _, y1, _, y2 = self.shape:bbox()
 	local ch = y2 - y1
 	local tcx, tcy = otherObject.shape:center()
-	local x1, y1, x2, y2 = otherObject.shape:bbox()
+	local _, y1, _, y2 = otherObject.shape:bbox()
 	local th = y2 - y1
 
 	-- if cat is directly above turtle
@@ -189,10 +189,14 @@ function Cat:rebound(otherObject)
 		-- stop walking
 		turtle.forces[WALK] = nil
 		self.forces[RIDE] = nil
-	elseif instanceOf(Enemy, otherObject) then
+	elseif instanceOf(Enemy, otherObject) or instanceOf(Projectile, otherObject) then
 		-- paralyze self
 		self.paralyzeTime = 0
 		LivingObject.takeHit(self, otherObject.damage)
+
+		if instanceOf(Projectile, otherObject) then
+			otherObject:destroy()
+		end
 	end
 end
 

@@ -1,10 +1,12 @@
 HardonCollider = require('hardoncollider')
 vector = require('hump.vector')
+timer = require('hump.timer')
 require('middleclass')
 require('camera')
 require('const')
 require('game')
 require('keyboard')
+require('mouse')
 require('force')
 require('Trailable')
 require('entities.GameObject')
@@ -14,6 +16,8 @@ require('entities.Cat')
 require('entities.Enemy')
 require('entities.Weapon')
 require('entities.MeleeWeapon')
+require('entities.Gun')
+require('entities.Projectile')
 
 collider = nil
 
@@ -46,6 +50,9 @@ function love.update(dt)
 		v:update(dt)
 	end
 
+	-- update timer in the game, wherever they are
+	timer.update(dt)
+
 --	spawnEnemies(dt)
 
 	positionCamera(20, 50)
@@ -56,7 +63,7 @@ local spawnTime = 0
 function spawnEnemies(dt)
 	spawnTime = spawnTime + dt
 
-	if (spawnTime > 0.7) then
+	if (spawnTime > math.random()+1) then
 		spawnTime = 0
 		Enemy:new()
 	end
@@ -138,6 +145,14 @@ end
 
 function love.keyreleased(key)
 	keyboard:release(key)
+end
+
+function love.mousepressed(x, y, button)
+	mouse:press(button)
+end
+
+function love.mousereleased(x, y, button)
+	mouse:release(button)
 end
 
 function love.focus(f)

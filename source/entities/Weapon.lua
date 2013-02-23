@@ -1,4 +1,4 @@
-Weapon = class("Weapon", GameObject)
+Weapon = class('Weapon', GameObject)
 Weapon.sequence = 0
 
 function Weapon:initialize(name, owner, shape)
@@ -10,4 +10,7 @@ function Weapon:initialize(name, owner, shape)
 end
 
 function Weapon:attack()
+end
+
+function Weapon:afterAttack()
 end
