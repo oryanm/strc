@@ -1,0 +1,24 @@
+Gun = class('Gun', Weapon)
+
+function Gun:initialize(owner, shape)
+	Weapon.initialize(self, 'Gun', owner, shape or
+		collider:addRectangle(0, 0, 30, 10))
+
+	local x,y = owner.shape:center()
+	self.shape:moveTo(x + 20, y)
+	self.fireRate = 0.05
+end
+
+function Gun:attack()
+	self.attacking = true
+	self.handle = timer.addPeriodic(self.fireRate,
+		function()
+			Projectile:new(vector.new(love.mouse.getPosition()) + vector.new(camera._x, camera._y),
+				collider:addPoint((vector.new(self.shape:center()) + vector.new(10,0)):unpack()))
+		end)
+end
+
+function Gun:afterAttack()
+	self.attacking = false
+	timer.cancel(self.handle)
+end
