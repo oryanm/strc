@@ -61,10 +61,12 @@ function game:toggleFullscreen()
 	local w, h, fullscreen, v, f = love.graphics.getMode()
 
 	if fullscreen then
-		love.graphics.setMode( 1000, 500, not fullscreen, v, f)
+		love.graphics.setMode(1000, 500, not fullscreen, v, f)
 	else
-		--TODO: need to find a way to get monitor resolution
-		love.graphics.setMode(1920, 1080, not fullscreen, v, f)
+		-- this should set the resolution to it's current one in fullscreen
+		love.graphics.setMode(0, 0, not fullscreen, v, f)
+		-- a bug in LOVE 0.8 makes it necessary to set the mode again
+		love.graphics.setMode(love.graphics.getWidth(), love.graphics.getHeight(), not fullscreen, v, f)
 	end
 
 	self.map.height = love.graphics.getHeight()
