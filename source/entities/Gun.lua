@@ -13,8 +13,9 @@ function Gun:attack()
 	self.attacking = true
 	self.handle = timer.addPeriodic(self.fireRate,
 		function()
-			Projectile:new(vector.new(love.mouse.getPosition()) + vector.new(camera._x, camera._y),
-				collider:addPoint((vector.new(self.shape:center()) + vector.new(10,0)):unpack()))
+			local proj = collider:addPoint((vector.new(self.shape:center()) + vector.new(10,0)):unpack())
+			collider:copyGroups(self.shape, proj)
+			Projectile:new(vector.new(love.mouse.getPosition()) + vector.new(camera._x, camera._y), proj)
 		end)
 end
 

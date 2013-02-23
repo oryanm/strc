@@ -11,26 +11,20 @@ function Cat:initialize(shape)
 	-- the time cat has been in the air
 	self.jumpTime = 0
 
-	self.weapon = Gun:new(self)
+--	self.weapon = Gun:new(self)
 --	self.weapon = MeleeWeapon:new(self)
-	collider:addToGroup('Cats', self.weapon.shape)
-
-	-- the time self has been paralyzed.
-	-- -1 when self is not paralyzed
-	self.paralyzeTime = -1
+--	collider:addToGroup('Cats', self.weapon.shape)
 
 	-- set the trail
 	self.trail = {}
 	self.maxSizeOfTrail = 100
 
+	self.paralyzed = false
 	self.locked = false
 end
 
 function Cat:update(dt)
 	self:checkForLock(dt)
-	if (self.paralyzeTime >= 0) then
-		self:paralyze(dt)
-	end
 	self:limitJump(dt)
 	LivingObject.update(self, dt)
 	self:addTrail()
@@ -54,30 +48,6 @@ function Cat:unlock()
 	self.shape:moveTo(x+20,cy)
 	-- TODO: fix the way weapons work with this
 --	self.weapon.shape:moveTo(x+40,cy)
-end
-
-function Cat:paralyze(dt)
-	-- update paralyze time
-	self.paralyzeTime = self.paralyzeTime + dt
-
-	-- TODO: move this to takeHit()
-	-- paralyze self by disabling all player applied forces
-	for i, force in pairs(PLAYER_APPLIED_FORCES) do
-		self.forces[force.key] = nil
-	end
-
-	-- if time is up
-	if self.paralyzeTime > HIT_PARALIZE_TIME then
-		-- reset the time
-		self.paralyzeTime = -1
-
-		-- add the appropriate forces for every pressed key
-		for i, force in pairs(PLAYER_APPLIED_FORCES) do
-			if love.keyboard.isDown(force.key) then
-				self.forces[force.key] = force
-			end
-		end
-	end
 end
 
 function Cat:limitJump(dt)
@@ -147,7 +117,7 @@ function Cat:collide(otherObject)
 	self.forces[otherObject.name] = f
 end
 
-function Cat:collideWithEarth(otherObject)
+function Cat:collideWithEarth()
 	-- apply collision affect on speed
 	self.speed = self.speed:permul(vector.new(SURFACE_FRICTION, -RESTITUTION))
 	-- reset jumping
@@ -190,13 +160,23 @@ function Cat:rebound(otherObject)
 		turtle.forces[WALK] = nil
 		self.forces[RIDE] = nil
 	elseif instanceOf(Enemy, otherObject) or instanceOf(Projectile, otherObject) then
-		-- paralyze self
-		self.paralyzeTime = 0
-		LivingObject.takeHit(self, otherObject.damage)
+		self:takeHit(otherObject.damage)
+	end
+end
 
-		if instanceOf(Projectile, otherObject) then
-			otherObject:destroy()
-		end
+function Cat:takeHit(damage)
+	LivingObject.takeHit(self, damage)
+	self:paralyze()
+end
+
+function Cat:paralyze()
+	-- paralyze self for HIT_PARALYZE_TIME
+	self.paralyzed = true
+	timer.add(HIT_PARALYZE_TIME, function() self.paralyzed = false end)
+
+	-- disable all player applied forces
+	for _, force in pairs(PLAYER_APPLIED_FORCES) do
+		self.forces[force.key] = nil
 	end
 end
 

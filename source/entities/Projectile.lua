@@ -24,3 +24,7 @@ function Projectile:update(dt)
 	end
 end
 
+function Projectile:rebound(otherObject)
+	self:destroy()
+end
+

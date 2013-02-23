@@ -40,9 +40,5 @@ function Enemy:rebound(otherObject)
 	if otherObject == turtle or otherObject == cat or
 		instanceOf(Weapon, otherObject) or instanceOf(Projectile, otherObject) then
 		LivingObject.takeHit(self, otherObject.damage)
-
-		if instanceOf(Projectile, otherObject) then
-			otherObject:destroy()
-		end
 	end
 end
