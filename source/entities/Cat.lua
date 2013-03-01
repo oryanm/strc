@@ -11,9 +11,11 @@ function Cat:initialize(shape)
 	-- the time cat has been in the air
 	self.jumpTime = 0
 
---	self.weapon = Gun:new(self)
---	self.weapon = MeleeWeapon:new(self)
---	collider:addToGroup('Cats', self.weapon.shape)
+	self.weapons.long = Gun:new(self)
+	collider:addToGroup('Cats', self.weapons.long.shape)
+	self.weapons.melee = MeleeWeapon:new(self)
+	collider:addToGroup('Cats', self.weapons.melee.shape)
+	self.weapon = self.weapons.melee
 
 	-- set the trail
 	self.trail = {}
@@ -32,11 +34,11 @@ end
 
 function Cat:checkForLock(dt)
 	local x, y = turtle.shape:center()
-	local cx, cy = self.shape:center()
 	self.locked = self.shape:intersectsRay(x, y, 0, -1)
 	if self.locked then
-		self.shape:moveTo(x,cy)
---		self.weapon.shape:moveTo(x+20,cy)
+		local _, cy = self.shape:center()
+		self:moveTo(x, cy)
+		self.weapon = self.weapons.long
 	end
 end
 
@@ -45,9 +47,8 @@ function Cat:unlock()
 	local x = turtle.shape:center()
 	local cx, cy = self.shape:center()
 	self.forces[JUMP] = FORCES.JUMP
-	self.shape:moveTo(x+20,cy)
-	-- TODO: fix the way weapons work with this
---	self.weapon.shape:moveTo(x+40,cy)
+	self:moveTo(x + 20, cy)
+	self.weapon = self.weapons.melee
 end
 
 function Cat:limitJump(dt)
@@ -143,7 +144,7 @@ function Cat:collideWithTurtle(otherObject)
 
 		-- same effect as colliding with earth
 		return self:collideWithEarth()
-		-- if cat is to turtle's side
+	-- if cat is to turtle's side
 	else
 		self.speed.x = -RESTITUTION*self.speed.x
 

@@ -7,19 +7,14 @@ function LivingObject:initialize(name, shape)
 	self.damage = 10
 	self.direction = DIRECTION.LEFT
 	self.forces[GRAVITY] = FORCES.GRAVITY
+	self.weapons = {}
 end
 
 function LivingObject:update(dt)
 	-- calculate acceleration
 	local acceleration = self:calculateAcceleration()
 	-- move to new position
-	local delta = self:calculatePositionDelta(dt, acceleration)
-	self.shape:move(delta:unpack())
-
-	if self.weapon ~= nil then
-		self.weapon.shape:move(delta:unpack())
-	end
-
+	self:move(self:calculatePositionDelta(dt, acceleration))
 	-- calculate new speed
 	self.speed = self:calculateSpeed(dt, acceleration)
 end
@@ -44,6 +39,21 @@ function LivingObject:calculateSpeed(dt, acceleration)
 	speed.y = math.clamp(speed.y, -self.maxSpeed.y, self.maxSpeed.y)
 
 	return speed
+end
+
+function LivingObject:move(vector)
+	local x, y = vector:unpack()
+	self.shape:move(x, y)
+
+	-- move all attached objects as well
+	for _, v in pairs(self.weapons) do
+		v.shape:move(x, y)
+	end
+end
+
+function LivingObject:moveTo(x, y)
+	local cx, cy = self.shape:center()
+	self:move(vector.new(x - cx, y - cy))
 end
 
 function LivingObject:attack()
