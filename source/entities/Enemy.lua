@@ -7,8 +7,6 @@ function Enemy:initialize(shape)
 		collider:addRectangle(camera._x + 1100, camera._y + 300, 20, 20))
 	collider:addToGroup('Enemies', self.shape)
 	self.forces[WALK] = vector.new(self.direction*WALKING_FORCE, 0)
---	self.weapon = MeleeWeapon:new(self)
---	collider:addToGroup('Enemies', self.weapon.shape)
 end
 
 function Enemy:draw()

@@ -5,6 +5,7 @@ function Gun:initialize(owner, shape)
 		collider:addRectangle(0, 0, 30, 10))
 
 	local x,y = owner.shape:center()
+	collider:setGhost(self.shape)
 	self.shape:moveTo(x + 20, y)
 	self.fireRate = 0.05
 end

@@ -2,27 +2,32 @@ MeleeWeapon = class("MeleeWeapon", Weapon)
 
 function MeleeWeapon:initialize(owner, shape)
 	Weapon.initialize(self, 'MeleeWeapon', owner, shape or
-		collider:addRectangle(0, 0, 5, 100))
+		collider:addRectangle(0, 0, 50, 50))
 	self.damage = 20
 
 	local x,y = owner.shape:center()
-	self.shape:moveTo(x, y-20)
-	self.shape:rotate(math.pi/4*owner.direction, x, y)
-end
-
-function MeleeWeapon:update(dt)
-	local x,y = self.owner.shape:center()
-	local speed = 10
-	local maxAngle = math.pi*3/4
-
-	if self.attacking and math.abs(self.shape:rotation()) < maxAngle then
-		self.shape:rotate(speed*dt*self.owner.direction, x, y)
-	elseif self.attacking then
-		self.attacking = false
-		self.shape:setRotation(math.pi/4*self.owner.direction, x, y)
-	end
+	self.shape:moveTo(x + 15, y - 15)
+	collider:setGhost(self.shape)
+	self.ready = true
 end
 
 function MeleeWeapon:attack()
-	self.attacking = true
+	if self.ready then
+		self.attacking = true
+		self.ready = false
+		collider:setSolid(self.shape)
+
+		timer.add(0.2, function()
+			collider:setGhost(self.shape)
+			self.attacking = false
+		end)
+
+		timer.add(0.4, function()
+			self.ready = true
+		end)
+	end
+end
+
+function MeleeWeapon:draw()
+	if self.attacking then self.shape:draw("line") end
 end

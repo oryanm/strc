@@ -1,5 +1,6 @@
 -- force const
--- if activated by key, the value is the KeyConstant value
+-- if activated by key,
+-- the value is the KeyConstant value
 JUMP = ' '
 MOVE_RIGHT = 'right'
 MOVE_LEFT = 'left'

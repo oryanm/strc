@@ -164,6 +164,10 @@ function math.clamp(x, min, max)
   return x < min and min or (x > max and max or x)
 end
 
+function math.clampv(v, min, max)
+	return vector.new(math.clamp(v.x, min.x, max.x), math.clamp(v.y, min.y, max.y))
+end
+
 function math.sign(x)
 	return x > 0 and 1 or x < 0 and -1 or 0
 end

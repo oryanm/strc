@@ -34,11 +34,8 @@ function LivingObject:calculatePositionDelta(dt, acceleration)
 end
 
 function LivingObject:calculateSpeed(dt, acceleration)
-	local speed = self.speed + acceleration * dt
-	speed.x = math.clamp(speed.x, -self.maxSpeed.x, self.maxSpeed.x)
-	speed.y = math.clamp(speed.y, -self.maxSpeed.y, self.maxSpeed.y)
-
-	return speed
+	-- (s = s + a*t) and s is in [-max s, max s]
+	return math.clampv(self.speed + acceleration * dt, -self.maxSpeed, self.maxSpeed)
 end
 
 function LivingObject:move(vector)
@@ -79,7 +76,7 @@ end
 function LivingObject:destroy()
 	GameObject.destroy(self)
 
-	if self.weapon ~= nil then
-		self.weapon:destroy()
+	for _, v in pairs(self.weapons) do
+		v:destroy()
 	end
 end

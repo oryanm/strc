@@ -26,13 +26,13 @@ function Cat:initialize(shape)
 end
 
 function Cat:update(dt)
-	self:checkForLock(dt)
+	self:checkForLock()
 	self:limitJump(dt)
 	LivingObject.update(self, dt)
 	self:addTrail()
 end
 
-function Cat:checkForLock(dt)
+function Cat:checkForLock()
 	local x, y = turtle.shape:center()
 	self.locked = self.shape:intersectsRay(x, y, 0, -1)
 	if self.locked then
@@ -43,12 +43,12 @@ function Cat:checkForLock(dt)
 end
 
 function Cat:unlock()
-	self.locked = false
 	local x = turtle.shape:center()
-	local cx, cy = self.shape:center()
-	self.forces[JUMP] = FORCES.JUMP
+	local _, cy = self.shape:center()
 	self:moveTo(x + 20, cy)
+	self.forces[JUMP] = FORCES.JUMP
 	self.weapon = self.weapons.melee
+	self.locked = false
 end
 
 function Cat:limitJump(dt)
@@ -137,7 +137,7 @@ function Cat:collideWithTurtle(otherObject)
 	local th = y2 - y1
 
 	-- if cat is directly above turtle
-	if ((ccy + (ch/2) - 10) < (tcy - (th/2))) then
+	if ((ccy + (ch/2) - 4) < (tcy - (th/2))) then
 		-- start walking
 		turtle.forces[WALK] = FORCES.WALK
 		self.forces[RIDE] = FORCES.RIDE
@@ -156,6 +156,7 @@ function Cat:rebound(otherObject)
 	-- remove otherObject's force on self
 	self.forces[otherObject.name] = nil
 
+	-- TODO: bug: unlocking while jumping doesn't stop turtle's walking
 	if otherObject == turtle and not self.locked then
 		-- stop walking
 		turtle.forces[WALK] = nil
