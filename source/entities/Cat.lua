@@ -26,9 +26,9 @@ function Cat:initialize(shape)
 end
 
 function Cat:update(dt)
+	LivingObject.update(self, dt)
 	self:checkForLock()
 	self:limitJump(dt)
-	LivingObject.update(self, dt)
 	self:addTrail()
 end
 
@@ -45,8 +45,11 @@ end
 function Cat:unlock()
 	local x = turtle.shape:center()
 	local _, cy = self.shape:center()
+	-- launch cat off of turtle
 	self:moveTo(x + 20, cy)
 	self.forces[JUMP] = FORCES.JUMP
+	-- release the trigger and switch weapons
+	self.weapon:afterAttack()
 	self.weapon = self.weapons.melee
 	self.locked = false
 end

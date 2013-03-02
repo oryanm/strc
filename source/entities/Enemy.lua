@@ -9,10 +9,6 @@ function Enemy:initialize(shape)
 	self.forces[WALK] = vector.new(self.direction*WALKING_FORCE, 0)
 end
 
-function Enemy:draw()
-	self.shape:draw('line')
-end
-
 function Enemy:collide(otherObject)
 	local f
 
