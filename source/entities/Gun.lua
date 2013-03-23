@@ -8,9 +8,9 @@ function Gun:initialize(owner, shape)
 	collider:setGhost(self.shape)
 	self.shape:moveTo(x + 20, y)
 	self.fireRate = 0.05
-
+	self.clipSize = 30
 	self.ammo = 70
-	self.loadedAmmo = 30
+	self.loadedAmmo = self.clipSize
 	self.reloading = false
 
 	--[[ fire blank shot. this is done for the scenario when the player is still holding
@@ -54,8 +54,9 @@ end
 function Gun:reload()
 	self.reloading = true
 	timer.add(1, function()
-		self.loadedAmmo = math.min(self.ammo, 30)
-		self.ammo = math.max(self.ammo - 30, 0)
+		-- reload a full clip or what is left
+		self.loadedAmmo = math.min(self.ammo, self.clipSize)
+		self.ammo = math.max(self.ammo - self.clipSize, 0)
 		self.reloading = false
 	end)
 end
