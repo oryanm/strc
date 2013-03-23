@@ -13,10 +13,10 @@ end
 function LivingObject:update(dt)
 	-- calculate acceleration
 	local acceleration = self:calculateAcceleration()
-	-- move to new position
-	self:move(self:calculatePositionDelta(dt, acceleration))
 	-- calculate new speed
 	self.speed = self:calculateSpeed(dt, acceleration)
+	-- move to new position
+	self:move(self:calculatePositionDelta(dt, acceleration))
 end
 
 function LivingObject:calculateAcceleration()
