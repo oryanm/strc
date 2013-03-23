@@ -17,7 +17,7 @@ keyboard.keys.escape 	= {}
 
 local function moveRight()
 	if not cat.paralyzed then
-		if cat.locked and love.keyboard.isDown('lshift') then
+		if cat.locked and love.keyboard.isDown('lshift') and cat.jumpTime == 0 then
 			cat:unlock()
 		end
 
