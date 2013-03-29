@@ -1,4 +1,4 @@
-require('TEsound')
+require('lib.TEsound')
 
 game = {}
 game.map = {}
@@ -7,7 +7,7 @@ game.map.height = -1
 game.gravity = 10000
 game.objects = {}
 game.pause = false
-game.timer = require('hump.timer')
+game.timer = require('lib.hump.timer')
 game.sound = TEsound
 
 function game:start()

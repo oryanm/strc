@@ -193,6 +193,12 @@ end
 
 -- remove shape from internal tables and the hash
 function HC:remove(shape)
+
+	-- remove shape from its groups
+	for k, v in pairs(shape._groups) do
+		self:removeFromGroup(k, shape)
+	end
+
 	local id = self._shape_ids[shape]
 	if id then
 		self._active_shapes[id] = nil
@@ -223,6 +229,12 @@ function HC:removeFromGroup(group, shape, ...)
 	self.groups[group][shape] = nil
 	shape._groups[group] = nil
 	return self:removeFromGroup(group, ...)
+end
+
+function HC:copyGroups(shape, otherShape)
+	for k, v in pairs(shape._groups) do
+		self:addToGroup(k, otherShape)
+	end
 end
 
 function HC:setPassive(shape, ...)
