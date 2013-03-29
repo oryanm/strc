@@ -303,10 +303,6 @@ function PointShape:center()
 	return self._pos:unpack()
 end
 
-function PointShape:pos()
-	return self._pos
-end
-
 function ConvexPolygonShape:outcircle()
 	local cx,cy = self:center()
 	return cx,cy, self._polygon._radius
