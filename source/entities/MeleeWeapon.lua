@@ -26,7 +26,7 @@ function MeleeWeapon:attack()
 			self.ready = true
 		end)
 
-		game.sound.play(AUDIO_RESOURCES_PATH .. 'mel.wav')
+		speakers:playSoundEffect('mel.wav')
 	end
 end
 

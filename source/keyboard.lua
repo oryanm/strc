@@ -38,7 +38,7 @@ local function jump()
 		cat.forces[JUMP] = FORCES.JUMP
 --		cat.forces[JUMP] = force.new(0,
 --			(JUMPING_FORCE * ((MAX_JUMP_TIME - cat.jumpTime)/MAX_JUMP_TIME)), JUMP)
-		game.sound.play(AUDIO_RESOURCES_PATH .. 'jump.wav')
+		speakers:jumpSound()
 	end
 end
 

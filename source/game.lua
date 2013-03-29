@@ -1,5 +1,3 @@
-require('lib.TEsound')
-
 game = {}
 game.map = {}
 game.map.width = -1
@@ -8,26 +6,24 @@ game.gravity = 10000
 game.objects = {}
 game.pause = false
 game.timer = require('lib.hump.timer')
-game.sound = TEsound
 
 function game:start()
 	self:setMapBounds()
-	print(self.map.width .. " " .. self.map.height)
 	self:setCameraBounds()
 
 	earth = Earth:new()
 	turtle = Turtle:new()
 	cat = Cat:new()
 
-	self.sound.playLooping(AUDIO_RESOURCES_PATH .. 'music1.wav', 'music')
+	speakers:load()
 end
 
 function game:togglePause()
 	self.pause = not self.pause
 	if self.pause then
-		self.sound.pause('music')
+		speakers.sound.pause('music')
 	else
-		self.sound.resume('music')
+		speakers.sound.resume('music')
 	end
 end
 
@@ -38,7 +34,7 @@ function game:stop()
 
 	collider:clear()
 
-	self.sound.stop('music')
+	speakers:silence()
 end
 
 function game:reset()

@@ -53,7 +53,7 @@ function Cat:unlock()
 	self.weapon:safe()
 	self.weapon = self.weapons.melee
 	self.locked = false
-	game.sound.play(AUDIO_RESOURCES_PATH .. 'jump.wav')
+	speakers:jumpSound()
 end
 
 function Cat:limitJump(dt)

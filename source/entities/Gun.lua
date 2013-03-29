@@ -50,7 +50,7 @@ function Gun:fireProjectile()
 			local proj = collider:addPoint((vector.new(self.shape:center()) + vector.new(10,0)):unpack())
 			collider:copyGroups(self.shape, proj)
 			Projectile:new(vector.new(love.mouse.getPosition()) + vector.new(camera._x, camera._y), proj)
-			game.sound.play(AUDIO_RESOURCES_PATH .. 'fireProjectile.wav')
+			speakers:playSoundEffect('fireProjectile.wav')
 		end
 	end
 end

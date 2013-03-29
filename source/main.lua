@@ -6,6 +6,7 @@ require('const')
 require('game')
 require('keyboard')
 require('mouse')
+require('speakers')
 require('force')
 require('Trailable')
 require('entities.GameObject')
@@ -39,7 +40,7 @@ function love.update(dt)
 	-- if something takes too long we also suspend game logic. i think
 	dt = math.min(dt, 0.01)
 
-	game.sound.cleanup()
+	speakers.sound.cleanup()
 	-- update timers in the game, wherever they are
 	game.timer.update(dt)
 	-- check for collisions
