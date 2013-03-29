@@ -17,14 +17,16 @@ function MeleeWeapon:attack()
 		self.ready = false
 		collider:setSolid(self.shape)
 
-		timer.add(0.2, function()
+		game.timer.add(0.2, function()
 			collider:setGhost(self.shape)
 			self.attacking = false
 		end)
 
-		timer.add(0.4, function()
+		game.timer.add(0.4, function()
 			self.ready = true
 		end)
+
+		game.sound.play(AUDIO_RESOURCES_PATH .. 'mel.wav')
 	end
 end
 

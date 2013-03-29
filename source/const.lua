@@ -11,6 +11,8 @@ JUMPING_FORCE = -100000
 RUNNING_FORCE = 30000
 WALKING_FORCE = 5000
 
+AUDIO_RESOURCES_PATH = '/resources/audio/'
+
 --[[
 	a and b or c <==> a ? b : c
 	x = x or v <==> if not x then x=v end <==>

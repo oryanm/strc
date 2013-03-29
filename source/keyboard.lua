@@ -38,6 +38,7 @@ local function jump()
 		cat.forces[JUMP] = FORCES.JUMP
 --		cat.forces[JUMP] = force.new(0,
 --			(JUMPING_FORCE * ((MAX_JUMP_TIME - cat.jumpTime)/MAX_JUMP_TIME)), JUMP)
+		game.sound.play(AUDIO_RESOURCES_PATH .. 'jump.wav')
 	end
 end
 
@@ -66,7 +67,7 @@ local function toggleFullscreen()
 end
 
 local function pauseGame()
-	game.pause = not game.pause
+	game:togglePause()
 end
 
 local function quitGame()

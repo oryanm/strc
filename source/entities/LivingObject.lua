@@ -67,9 +67,11 @@ end
 
 function LivingObject:takeHit(damage)
 	self.health = self.health - damage
+	game.sound.play(AUDIO_RESOURCES_PATH .. 'hit.wav')
 
 	if self.health < 1 then
 		self:destroy()
+		game.sound.play(AUDIO_RESOURCES_PATH .. 'death.wav')
 	end
 end
 

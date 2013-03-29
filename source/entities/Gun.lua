@@ -12,6 +12,7 @@ function Gun:initialize(owner, shape)
 	self.ammo = 200
 	self.loadedAmmo = self.clipSize
 	self.reloading = false
+	self.reloadDelay = 1
 
 	--[[ fire blank shot. this is done for the scenario when the player is still holding
 	the mouse button while he switches from melee to ranged weapon for the first time ]]
@@ -26,37 +27,50 @@ function Gun:attack()
 			self:reload()
 		else
 			self.attacking = true
-			self.handle = timer.addPeriodic(self.fireRate, self:fireProjectile())
+			self.handle = game.timer.addPeriodic(self.fireRate, self:fireProjectile())
 		end
 	end
 end
 
 function Gun:afterAttack()
+	game.timer.cancel(self.handle)
 	self.attacking = false
-	timer.cancel(self.handle)
 end
 
 function Gun:fireProjectile()
 	return function()
-		self.loadedAmmo = self.loadedAmmo - 1
 		-- if clip is empty
 		if self.loadedAmmo <= 0 then
 			-- can't fire
-			timer.cancel(self.handle)
+			self.attacking = false
+			self:reload()
+			return false
 		else
+			self.loadedAmmo = self.loadedAmmo - 1
 			local proj = collider:addPoint((vector.new(self.shape:center()) + vector.new(10,0)):unpack())
 			collider:copyGroups(self.shape, proj)
 			Projectile:new(vector.new(love.mouse.getPosition()) + vector.new(camera._x, camera._y), proj)
+			game.sound.play(AUDIO_RESOURCES_PATH .. 'fireProjectile.wav')
 		end
 	end
 end
 
 function Gun:reload()
 	self.reloading = true
-	timer.add(1, function()
+	self.loadingHandle = game.timer.add(self.reloadDelay, function()
 		-- reload a full clip or what is left
 		self.loadedAmmo = math.min(self.ammo, self.clipSize)
 		self.ammo = math.max(self.ammo - self.clipSize, 0)
 		self.reloading = false
 	end)
+end
+
+function Gun:safe()
+	self:afterAttack()
+
+	-- abort reloading
+	if self.reloading then
+		game.timer.cancel(self.loadingHandle)
+		self.reloading = false
+	end
 end

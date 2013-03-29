@@ -50,9 +50,10 @@ function Cat:unlock()
 	self:moveTo(x + 20, cy)
 	self.forces[JUMP] = FORCES.JUMP
 	-- release the trigger and switch weapons
-	self.weapon:afterAttack()
+	self.weapon:safe()
 	self.weapon = self.weapons.melee
 	self.locked = false
+	game.sound.play(AUDIO_RESOURCES_PATH .. 'jump.wav')
 end
 
 function Cat:limitJump(dt)
@@ -141,7 +142,7 @@ function Cat:collideWithTurtle(otherObject)
 	local th = y2 - y1
 
 	-- if cat is directly above turtle
-	if ((ccy + (ch/2) - 4) < (tcy - (th/2))) then
+	if ((ccy + (ch/2) - 6) < (tcy - (th/2))) then
 		-- start walking
 		turtle.forces[WALK] = FORCES.WALK
 		self.forces[RIDE] = FORCES.RIDE
@@ -178,7 +179,7 @@ end
 function Cat:paralyze()
 	-- paralyze self for HIT_PARALYZE_TIME
 	self.paralyzed = true
-	timer.add(HIT_PARALYZE_TIME, function() self.paralyzed = false end)
+	game.timer.add(HIT_PARALYZE_TIME, function() self.paralyzed = false end)
 
 	-- disable all player applied forces
 	for _, force in pairs(PLAYER_APPLIED_FORCES) do

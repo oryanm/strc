@@ -1,6 +1,5 @@
 HardonCollider = require('hardoncollider')
 vector = require('hump.vector')
-timer = require('hump.timer')
 require('middleclass')
 require('camera')
 require('const')
@@ -26,8 +25,6 @@ turtle = nil
 cat = nil
 
 function love.load()
---	background = love.graphics.newImage("back.png")
-
 	-- create a collider
 	collider = HardonCollider.new(100, on_collide, done_collide)
 
@@ -42,6 +39,9 @@ function love.update(dt)
 	-- if something takes too long we also suspend game logic. i think
 	dt = math.min(dt, 0.01)
 
+	game.sound.cleanup()
+	-- update timers in the game, wherever they are
+	game.timer.update(dt)
 	-- check for collisions
 	collider:update(dt)
 
@@ -50,10 +50,7 @@ function love.update(dt)
 		v:update(dt)
 	end
 
-	-- update timer in the game, wherever they are
-	timer.update(dt)
-
---	spawnEnemies(dt)
+	spawnEnemies(dt)
 
 	positionCamera(20, 50)
 end
