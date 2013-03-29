@@ -36,6 +36,8 @@ end
 local function jump()
 	if not cat.paralyzed then
 		cat.forces[JUMP] = FORCES.JUMP
+--		cat.forces[JUMP] = force.new(0,
+--			(JUMPING_FORCE * ((MAX_JUMP_TIME - cat.jumpTime)/MAX_JUMP_TIME)), JUMP)
 	end
 end
 

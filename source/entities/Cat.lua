@@ -7,6 +7,7 @@ function Cat:initialize(shape)
 	collider:addToGroup('Cats', self.shape)
 	self.forces[GRAVITY] = FORCES.GRAVITY
 	self.health = 100
+	self.damage = 40
 
 	-- the time cat has been in the air
 	self.jumpTime = 0
@@ -61,7 +62,7 @@ function Cat:limitJump(dt)
 		-- by the time self.jumpTime is 10%,20%,..,100% of MAX_JUMP_TIME
 		-- this will reduce the jump force by 10%,20%,..,100%
 		local y = self.forces[JUMP].y - ((JUMPING_FORCE * dt) / MAX_JUMP_TIME)
-		self.forces[JUMP] = vector.new(self.forces[JUMP].x, y < 0 and y or 0)
+		self.forces[JUMP] = vector.new(self.forces[JUMP].x, math.min(y, 0))
 	end
 
 	-- stop jump force when max jump time reached

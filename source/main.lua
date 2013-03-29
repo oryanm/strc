@@ -59,11 +59,12 @@ function love.update(dt)
 end
 
 local spawnTime = 0
-
+local x =  0
 function spawnEnemies(dt)
 	spawnTime = spawnTime + dt
 
-	if (spawnTime > math.random()+1) then
+	if (spawnTime > x) then
+		x = math.random()*5
 		spawnTime = 0
 		Enemy:new()
 	end

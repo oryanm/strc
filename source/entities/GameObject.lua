@@ -11,7 +11,7 @@ function GameObject:initialize(name, shape)
 	-- forces working on him and current speed
 	self.forces = {}
 	self.speed = vector.new()
-	self.maxSpeed = vector.new(300, 600)
+	self.maxSpeed = vector.new(400, 1200)
 end
 
 function GameObject:update(dt)

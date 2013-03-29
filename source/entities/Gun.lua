@@ -9,7 +9,7 @@ function Gun:initialize(owner, shape)
 	self.shape:moveTo(x + 20, y)
 	self.fireRate = 0.05
 	self.clipSize = 30
-	self.ammo = 70
+	self.ammo = 200
 	self.loadedAmmo = self.clipSize
 	self.reloading = false
 
