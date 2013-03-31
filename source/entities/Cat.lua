@@ -3,7 +3,7 @@ Cat:include(Trailable)
 
 function Cat:initialize(shape)
 	LivingObject.initialize(self, 'Cat', shape or
-		collider:addRectangle(400, 100, 20, 20))
+		collider:addRectangle(400, 100, 36, 36))
 	collider:addToGroup('Cats', self.shape)
 	self.forces[GRAVITY] = FORCES.GRAVITY
 	self.health = 100
@@ -102,6 +102,8 @@ function Cat:draw()
 	love.graphics.print("(" ..
 		string.format("%.1f", x1) .. ", " ..
 		string.format("%.1f", y1) .. ")", x2, y2)
+
+--	love.graphics.draw(cati, x1, y1)
 end
 
 function Cat:collide(otherObject)
@@ -185,6 +187,50 @@ function Cat:paralyze()
 	for _, force in pairs(PLAYER_APPLIED_FORCES) do
 		self.forces[force.key] = nil
 	end
+end
+
+function Cat:destroy()
+	LivingObject.destroy(self)
+	cat = nil
+end
+
+function Cat:moveRight()
+	if not self.paralyzed then
+		if self.locked and love.keyboard.isDown('lshift') and self.jumpTime == 0 then
+			self:unlock()
+		end
+
+		self.forces[MOVE_RIGHT] = FORCES.MOVE_RIGHT
+		self.direction = DIRECTION.RIGHT
+	end
+end
+
+function Cat:moveLeft()
+	if not self.paralyzed then
+		self.forces[MOVE_LEFT] = FORCES.MOVE_LEFT
+		self.direction = DIRECTION.LEFT
+	end
+end
+
+function Cat:jump()
+	if not self.paralyzed then
+		self.forces[JUMP] = FORCES.JUMP
+		--		self.forces[JUMP] = force.new(0,
+		--			(JUMPING_FORCE * ((MAX_JUMP_TIME - cat.jumpTime)/MAX_JUMP_TIME)), JUMP)
+		speakers:jumpSound()
+	end
+end
+
+function Cat:afterMoveRight()
+	self.forces[MOVE_RIGHT] = nil
+end
+
+function Cat:afterMoveLeft()
+	self.forces[MOVE_LEFT] = nil
+end
+
+function Cat:afterJump()
+	self.forces[JUMP] = nil
 end
 
 -- Trailable methods

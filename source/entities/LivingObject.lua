@@ -76,9 +76,9 @@ function LivingObject:takeHit(damage)
 end
 
 function LivingObject:destroy()
-	GameObject.destroy(self)
-
 	for _, v in pairs(self.weapons) do
 		v:destroy()
 	end
+
+	GameObject.destroy(self)
 end

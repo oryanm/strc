@@ -4,7 +4,7 @@ game.map.width = -1
 game.map.height = -1
 game.gravity = 10000
 game.objects = {}
-game.pause = false
+game.paused = false
 game.timer = require('lib.hump.timer')
 
 function game:start()
@@ -19,8 +19,13 @@ function game:start()
 end
 
 function game:togglePause()
-	self.pause = not self.pause
-	if self.pause then
+	self:pause(not self.paused)
+end
+
+function game:pause(paused)
+	self.paused = paused
+
+	if self.paused then
 		speakers.sound.pause('music')
 	else
 		speakers.sound.resume('music')
@@ -40,6 +45,11 @@ end
 function game:reset()
 	self:stop()
 	self:start()
+end
+
+function game:quit()
+	self:stop()
+	love.event.push('quit')
 end
 
 function game:mapWidth()

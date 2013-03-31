@@ -16,49 +16,42 @@ keyboard.keys.lshift	= {}
 keyboard.keys.escape 	= {}
 
 local function moveRight()
-	if not cat.paralyzed then
-		if cat.locked and love.keyboard.isDown('lshift') and cat.jumpTime == 0 then
-			cat:unlock()
-		end
-
-		cat.forces[MOVE_RIGHT] = FORCES.MOVE_RIGHT
-		cat.direction = DIRECTION.RIGHT
-	end
+	if not cat or game.paused then return end
+	cat:moveRight()
 end
 
 local function moveLeft()
-	if not cat.paralyzed then
-		cat.forces[MOVE_LEFT] = FORCES.MOVE_LEFT
-		cat.direction = DIRECTION.LEFT
-	end
+	if not cat or game.paused then return end
+	cat:moveLeft()
 end
 
 local function jump()
-	if not cat.paralyzed then
-		cat.forces[JUMP] = FORCES.JUMP
---		cat.forces[JUMP] = force.new(0,
---			(JUMPING_FORCE * ((MAX_JUMP_TIME - cat.jumpTime)/MAX_JUMP_TIME)), JUMP)
-		speakers:jumpSound()
-	end
+	if not cat or game.paused then return end
+	cat:jump()
 end
 
 local function afterMoveRight()
-	cat.forces[MOVE_RIGHT] = nil
+	if not cat then return end
+	cat:afterMoveRight()
 end
 
 local function afterMoveLeft()
-	cat.forces[MOVE_LEFT] = nil
+	if not cat then return end
+	cat:afterMoveLeft()
 end
 
 local function afterJump()
-	cat.forces[JUMP] = nil
+	if not cat then return end
+	cat:afterJump()
 end
 
 local function attack()
+	if not cat or game.paused then return end
 	cat:attack()
 end
 
 local function afterAttack()
+	if not cat then return end
 	cat:afterAttack()
 end
 
@@ -71,7 +64,7 @@ local function pauseGame()
 end
 
 local function quitGame()
-	love.event.push('quit')
+	game:quit()
 end
 
 local function spawnEnemy()

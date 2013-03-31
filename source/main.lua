@@ -29,12 +29,14 @@ function love.load()
 	-- create a collider
 	collider = HardonCollider.new(100, on_collide, done_collide)
 
+--	cati = love.graphics.newImage("/resources/images/cat.png")
+
 	game:start()
 end
 
 function love.update(dt)
 	-- pause the game by not updating
-	if game.pause then return end
+	if game.paused then return end
 
 	-- don't know what it does but it helps
 	-- if something takes too long we also suspend game logic. i think
@@ -109,6 +111,7 @@ local row = 0
 
 -- TODO: have a real HUD
 function drawHUD()
+	if not cat then return end
 	local x1, y1, x2, y2 = cat.shape:bbox()
 
 	printToHUD("w : " .. game:screenWidth())
@@ -156,7 +159,7 @@ end
 
 function love.focus(f)
 	-- pause the game when out of focus
-	game.pause = not f
+	game:pause(not f)
 end
 
 function math.clamp(x, min, max)

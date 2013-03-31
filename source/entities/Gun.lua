@@ -74,3 +74,8 @@ function Gun:safe()
 		self.reloading = false
 	end
 end
+
+function Gun:destroy()
+	self:safe()
+	Weapon.destroy(self)
+end
