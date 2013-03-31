@@ -12,6 +12,7 @@ function GameObject:initialize(name, shape)
 	self.forces = {}
 	self.speed = vector.new()
 	self.maxSpeed = vector.new(400, 1200)
+	self.team = TEAMS.NEUTRAL
 end
 
 function GameObject:update(dt)

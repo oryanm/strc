@@ -7,6 +7,7 @@ function Weapon:initialize(name, owner, shape)
 	self.owner = owner
 	self.attacking = false
 	self.damage = 0
+	self.team = self.owner.team
 end
 
 function Weapon:attack()

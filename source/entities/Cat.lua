@@ -8,6 +8,7 @@ function Cat:initialize(shape)
 	self.forces[GRAVITY] = FORCES.GRAVITY
 	self.health = 100
 	self.damage = 40
+	self.team = TEAMS.GOODSIDE
 
 	-- the time cat has been in the air
 	self.jumpTime = 0
@@ -111,8 +112,7 @@ function Cat:collide(otherObject)
 
 	if otherObject == earth then
 		f = self:collideWithEarth()
-	elseif instanceOf(Enemy, otherObject) or instanceOf(Weapon, otherObject) or
-		instanceOf(Projectile, otherObject) then
+	elseif otherObject.team ~= TEAMS.NEUTRAL and self.team ~= otherObject.team then
 		-- bump back
 		self.speed.x = -RESTITUTION*self.speed.x
 		f = vector.new(math.sign(otherObject.shape:center() -
@@ -168,7 +168,7 @@ function Cat:rebound(otherObject)
 		-- stop walking
 		turtle.forces[WALK] = nil
 		self.forces[RIDE] = nil
-	elseif instanceOf(Enemy, otherObject) or instanceOf(Projectile, otherObject) then
+	elseif otherObject.team ~= TEAMS.NEUTRAL and self.team ~= otherObject.team then
 		self:takeHit(otherObject.damage)
 	end
 end

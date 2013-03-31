@@ -47,9 +47,9 @@ function Gun:fireProjectile()
 			return false
 		else
 			self.loadedAmmo = self.loadedAmmo - 1
-			local proj = collider:addPoint((vector.new(self.shape:center()) + vector.new(10,0)):unpack())
-			collider:copyGroups(self.shape, proj)
-			Projectile:new(vector.new(love.mouse.getPosition()) + vector.new(camera._x, camera._y), proj)
+			-- fire the projectile towards the mouse
+			Projectile:new(self, vector.new(love.mouse.getPosition()) + vector.new(camera._x, camera._y),
+				collider:addPoint((vector.new(self.shape:center()) + vector.new(10,0)):unpack()))
 			speakers:playSoundEffect('fireProjectile.wav')
 		end
 	end

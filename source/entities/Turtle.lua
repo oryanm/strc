@@ -5,6 +5,7 @@ function Turtle:initialize(shape)
 		collider:addRectangle(50, 300, 100, 70))
 	self.direction = DIRECTION.RIGHT
 	self.health = 50
+	self.team = TEAMS.GOODSIDE
 end
 
 function Turtle:draw()
@@ -23,8 +24,7 @@ end
 function Turtle:rebound(otherObject)
 	self.forces[otherObject.name] = nil
 
-	if instanceOf(Enemy, otherObject) or
-		instanceOf(Projectile, otherObject) then
+	if otherObject.team ~= TEAMS.NEUTRAL and self.team ~= otherObject.team then
 		self:takeHit(otherObject.damage)
 	end
 end

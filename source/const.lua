@@ -13,6 +13,13 @@ WALKING_FORCE = 5000
 
 AUDIO_RESOURCES_PATH = '/resources/audio/'
 
+TEAMS =
+{
+	NEUTRAL = 'neutral',
+	GOODSIDE = 'goodside',
+	DARKSIDE = 'darkside'
+}
+
 --[[
 	a and b or c <==> a ? b : c
 	x = x or v <==> if not x then x=v end <==>
