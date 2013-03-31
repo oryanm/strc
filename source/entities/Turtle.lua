@@ -28,3 +28,9 @@ function Turtle:rebound(otherObject)
 		self:takeHit(otherObject.damage)
 	end
 end
+
+function Turtle:destroy()
+	if cat then cat:destroy() end
+	LivingObject.destroy(self)
+	turtle = nil
+end

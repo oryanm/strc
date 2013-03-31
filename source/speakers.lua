@@ -33,7 +33,7 @@ function speakers:hitSound()
 end
 
 function speakers:playMusic()
-	return self:playLooping({ 'music1.wav', 'music2.wav' }, 'music')
+	return self:playLooping({ 'music1.wav', 'music2.wav', 'music3.wav' }, 'music')
 end
 
 function speakers:silence()

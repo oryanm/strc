@@ -85,10 +85,12 @@ end
 -- the camera is positioned xPercent of the screen's width behind turtle's center
 -- so that it fallows turtle when he moves
 function positionCamera(xPercent, yPercent)
-	local turtleXCenter,turtleYCenter = turtle.shape:center()
-	camera:setPosition(
-		(turtleXCenter - ((xPercent * game:screenWidth())/100)),
-		(turtleYCenter - ((yPercent * game:screenHeight())/100)))
+	if turtle then
+		local turtleXCenter,turtleYCenter = turtle.shape:center()
+		camera:setPosition(
+			(turtleXCenter - ((xPercent * game:screenWidth())/100)),
+			(turtleYCenter - ((yPercent * game:screenHeight())/100)))
+	end
 end
 
 function love.draw()

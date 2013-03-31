@@ -217,7 +217,9 @@ function Cat:jump()
 		self.forces[JUMP] = FORCES.JUMP
 		--		self.forces[JUMP] = force.new(0,
 		--			(JUMPING_FORCE * ((MAX_JUMP_TIME - cat.jumpTime)/MAX_JUMP_TIME)), JUMP)
-		speakers:jumpSound()
+		if self.jumpTime == 0 then
+			speakers:jumpSound()
+		end
 	end
 end
 
