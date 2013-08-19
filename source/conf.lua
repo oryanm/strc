@@ -1,3 +1,9 @@
+-- NOTE: if the resolution below is not supported by the screen
+-- and fullscreen = true, love will fail to load. however if fullscreen = false
+-- everything works fine and you can even toggleFullscreen
+WIDTH = 1920/2
+HEIGHT = 1080/2
+
 function love.conf(t)
 	t.title = "Super Turtle Riding Cat"        -- The title of the window the game is in (string)
 	t.author = "O/m"        -- The author of the game (string)
@@ -5,8 +11,8 @@ function love.conf(t)
 	t.version = "0.8.0"               -- The L�VE version this game was made for (number)
 	t.console = true and false           -- Attach a console (boolean, Windows only)
 	t.release = false           -- Enable release mode (boolean)
-	t.screen.width = 1000        -- The window width (number)
-	t.screen.height = 500       -- The window height (number)
+	t.screen.width = WIDTH        -- The window width (number)
+	t.screen.height = HEIGHT       -- The window height (number)
 	t.screen.fullscreen = true and false -- Enable fullscreen (boolean)
 	t.screen.vsync = false       -- Enable vertical sync (boolean)
 	t.screen.fsaa = 0           -- The number of FSAA-buffers (number)

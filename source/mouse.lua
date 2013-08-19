@@ -25,3 +25,7 @@ function mouse:release(key)
 	local key = mouse.keys[key]
 	if key ~= nil and key.released ~= nil then key.released() end
 end
+
+function mouse.getPosition()
+	return (vector.new(love.mouse.getPosition()) - canvas.offset) / canvas.scale
+end

@@ -48,7 +48,7 @@ function Gun:fireProjectile()
 		else
 			self.loadedAmmo = self.loadedAmmo - 1
 			-- fire the projectile towards the mouse
-			Projectile:new(self, vector.new(love.mouse.getPosition()) + vector.new(camera._x, camera._y),
+			Projectile:new(self, mouse.getPosition() + vector.new(camera._x, camera._y),
 				collider:addPoint((vector.new(self.shape:center()) + vector.new(10,0)):unpack()))
 			speakers:playSoundEffect('fireProjectile.wav')
 		end

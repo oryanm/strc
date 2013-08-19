@@ -1,6 +1,7 @@
 HardonCollider = require('lib.hardoncollider')
 vector = require('lib.hump.vector')
 require('lib.middleclass')
+require('canvas')
 require('camera')
 require('const')
 require('game')
@@ -29,8 +30,9 @@ function love.load()
 	-- create a collider
 	collider = HardonCollider.new(100, on_collide, done_collide)
 
---	cati = love.graphics.newImage("/resources/images/cat.png")
+--	cati = love.graphics.newImage("/resources/images/cat5.png")
 
+	canvas:load()
 	game:start()
 end
 
@@ -94,6 +96,7 @@ function positionCamera(xPercent, yPercent)
 end
 
 function love.draw()
+	canvas:set()
 	camera:set()
 
 --	love.graphics.setColor(0,255,0,255)
@@ -107,6 +110,7 @@ function love.draw()
 	--print('Memory actually used (in kB): ' .. collectgarbage('count'))
 
 	camera:unset()
+	canvas:unset()
 end
 
 local row = 0

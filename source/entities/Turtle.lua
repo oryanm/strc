@@ -2,7 +2,7 @@ Turtle = class('Turtle', LivingObject)
 
 function Turtle:initialize(shape)
 	LivingObject.initialize(self, 'Turtle', shape or
-		collider:addRectangle(50, 300, 100, 70))
+		collider:addRectangle(50, 300, 200, 100))
 	self.direction = DIRECTION.RIGHT
 	self.health = 50
 	self.team = TEAMS.GOODSIDE

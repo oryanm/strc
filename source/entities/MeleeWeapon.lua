@@ -6,7 +6,7 @@ function MeleeWeapon:initialize(owner, shape)
 	self.damage = 20
 
 	local x,y = owner.shape:center()
-	self.shape:moveTo(x + 15, y - 15)
+	self.shape:moveTo(x + 15, y)
 	collider:setGhost(self.shape)
 	self.ready = true
 end

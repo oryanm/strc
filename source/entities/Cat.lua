@@ -3,7 +3,7 @@ Cat:include(Trailable)
 
 function Cat:initialize(shape)
 	LivingObject.initialize(self, 'Cat', shape or
-		collider:addRectangle(400, 100, 36, 36))
+		collider:addRectangle(400, 100, 36, 70))
 	collider:addToGroup('Cats', self.shape)
 	self.forces[GRAVITY] = FORCES.GRAVITY
 	self.health = 100
@@ -97,14 +97,13 @@ end
 
 function Cat:draw()
 	self.shape:draw("fill")
+--	love.graphics.draw(cati, x1, y1)
 	self:drawTrail()
 
 	local x1,y1, x2,y2 = self.shape:bbox()
 	love.graphics.print("(" ..
 		string.format("%.1f", x1) .. ", " ..
 		string.format("%.1f", y1) .. ")", x2, y2)
-
---	love.graphics.draw(cati, x1, y1)
 end
 
 function Cat:collide(otherObject)

@@ -61,17 +61,17 @@ function game:mapHeight()
 end
 
 function game:screenWidth()
-	return love.graphics.getWidth()
+	return canvas.size.x * camera.scaleX
 end
 
 function game:screenHeight()
-	return love.graphics.getHeight()
+	return canvas.size.y * camera.scaleY
 end
 
 function game:setMapBounds()
 	-- must be >= to screen width
-	self.map.width = 2680 < love.graphics.getWidth() and love.graphics.getWidth() or 2680
-	self.map.height = love.graphics.getHeight()
+	self.map.width = 2680 < canvas.size.x and canvas.size.x or 2680
+	self.map.height = canvas.size.y
 end
 
 function game:setCameraBounds()
@@ -84,7 +84,7 @@ function game:toggleFullscreen()
 	local w, h, fullscreen, v, f = love.graphics.getMode()
 
 	if fullscreen then
-		love.graphics.setMode(1000, 500, not fullscreen, v, f)
+		love.graphics.setMode(WIDTH, HEIGHT, not fullscreen, v, f)
 	else
 		-- this should set the resolution to it's current one in fullscreen
 		love.graphics.setMode(0, 0, not fullscreen, v, f)
@@ -92,7 +92,9 @@ function game:toggleFullscreen()
 		love.graphics.setMode(love.graphics.getWidth(), love.graphics.getHeight(), not fullscreen, v, f)
 	end
 
-	self.map.height = love.graphics.getHeight()
+	canvas:calculateScale()
+
+	self.map.height = self:screenHeight()
 	-- reset the camera to fit the new screen size
 	self:setCameraBounds()
 	local x = earth.shape:center()
