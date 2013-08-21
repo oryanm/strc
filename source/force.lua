@@ -26,8 +26,8 @@ FORCES =
 	MOVE_LEFT = force.new(-RUNNING_FORCE, 0, MOVE_LEFT),
 	WALK = vector.new(WALKING_FORCE, 0),
 	RIDE = vector.new(WALKING_FORCE, 0),
-	GRAVITY = vector.new(0, game.gravity),
-	EARTH = vector.new(0, -game.gravity)
+	GRAVITY = vector.new(0, GRAVITY_FORCE),
+	EARTH = vector.new(0, -GRAVITY_FORCE)
 }
 
 PLAYER_APPLIED_FORCES =

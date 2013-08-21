@@ -2,7 +2,6 @@ game = {}
 game.map = {}
 game.map.width = -1
 game.map.height = -1
-game.gravity = 10000
 game.objects = {}
 game.paused = false
 game.timer = require('lib.hump.timer')
@@ -22,6 +21,8 @@ function game:togglePause()
 	self:pause(not self.paused)
 end
 
+-- todo: bug! when the window is not focused the game will not
+-- receive release events from the keyboard or the mouse.
 function game:pause(paused)
 	self.paused = paused
 
