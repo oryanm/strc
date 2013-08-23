@@ -3,7 +3,7 @@ Cat:include(Trailable)
 
 function Cat:initialize(shape)
 	LivingObject.initialize(self, 'Cat', shape or
-		collider:addRectangle(400, 100, 36, 70))
+		collider:addRectangle(400, 100, 44, 67))
 	collider:addToGroup('Cats', self.shape)
 	self.forces[GRAVITY] = FORCES.GRAVITY
 	self.health = 100
@@ -48,7 +48,7 @@ function Cat:unlock()
 	local x = turtle.shape:center()
 	local _, cy = self.shape:center()
 	-- launch cat off of turtle
-	self:moveTo(x + 20, cy)
+	self:moveTo(x + 50, cy)
 	self.forces[JUMP] = FORCES.JUMP
 	-- release the trigger and switch weapons
 	self.weapon:safe()
@@ -96,17 +96,19 @@ function Cat:boundToScreen(positionDelta)
 end
 
 function Cat:draw()
-	self.shape:draw("fill")
---	love.graphics.draw(cati, x1, y1)
+--	self.shape:draw("fill")
 	self:drawTrail()
 
 	local x1,y1, x2,y2 = self.shape:bbox()
+	love.graphics.draw(cati, math.floor(x1), math.floor(y1))
+
 	love.graphics.print("(" ..
-		string.format("%.1f", x1) .. ", " ..
-		string.format("%.1f", y1) .. ")", x2, y2)
+		string.format("%.1f", x2) .. ", " ..
+		string.format("%.1f", y2) .. ")", x2, y2)
 end
 
 function Cat:collide(otherObject)
+	LivingObject.collide(self, otherObject)
 	local f
 
 	if otherObject == earth then
@@ -125,8 +127,6 @@ function Cat:collide(otherObject)
 end
 
 function Cat:collideWithEarth()
-	-- apply collision affect on speed
-	self.speed = self.speed:permul(vector.new(SURFACE_FRICTION, -RESTITUTION))
 	-- reset jumping
 	self.jumpTime = 0
 
@@ -135,24 +135,20 @@ function Cat:collideWithEarth()
 end
 
 function Cat:collideWithTurtle(otherObject)
-	local ccx, ccy = self.shape:center()
-	local _, y1, _, y2 = self.shape:bbox()
-	local ch = y2 - y1
-	local tcx, tcy = otherObject.shape:center()
-	local _, y1, _, y2 = otherObject.shape:bbox()
-	local th = y2 - y1
+	local _, catTopYCoordinate, _, _ = self.shape:bbox()
+	local _, turtleTopYCoordinate, _, _ = otherObject.shape:bbox()
 
-	-- if cat is directly above turtle
-	if ((ccy + (ch/2) - 6) < (tcy - (th/2))) then
+	-- if cat is above turtle
+	if (catTopYCoordinate < turtleTopYCoordinate) then
 		-- start walking
 		turtle.forces[WALK] = FORCES.WALK
 		self.forces[RIDE] = FORCES.RIDE
-
 		-- same effect as colliding with earth
 		return self:collideWithEarth()
-	-- if cat is to turtle's side
-	else
-		self.speed.x = -RESTITUTION*self.speed.x
+	else -- if cat is to turtle's side
+		local ccx, ccy = self.shape:center()
+		local tcx, tcy = otherObject.shape:center()
+		self.speed.x = -RESTITUTION * self.speed.x
 
 		return ccx < tcx and FORCES.MOVE_LEFT or FORCES.MOVE_RIGHT
 	end

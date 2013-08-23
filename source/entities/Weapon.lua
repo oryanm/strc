@@ -15,3 +15,6 @@ end
 
 function Weapon:afterAttack()
 end
+
+function Weapon:collide(otherObject)
+end

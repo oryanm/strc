@@ -11,13 +11,12 @@ function Enemy:initialize(shape)
 end
 
 function Enemy:collide(otherObject)
+	LivingObject.collide(self, otherObject)
 	local f
 
 	if otherObject == earth then
 		-- add earth force to counter gravity
 		f = FORCES.EARTH
-		-- apply collision affect on speed
-		self.speed = self.speed:permul(vector.new(SURFACE_FRICTION, -RESTITUTION))
 	elseif otherObject.team ~= TEAMS.NEUTRAL and self.team ~= otherObject.team then
 		-- bump back
 		self.speed.x = -RESTITUTION*self.speed.x

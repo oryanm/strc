@@ -13,11 +13,12 @@ function Turtle:draw()
 end
 
 function Turtle:collide(otherObject)
+	-- todo: fix collisions from the side
+	if otherObject ~= cat  then LivingObject.collide(self, otherObject) end
+
 	if otherObject == earth then
 		-- add earth force to counter gravity
 		self.forces[otherObject.name] = FORCES.EARTH
-		-- apply collision affect on speed
-		self.speed = self.speed:permul(vector.new(SURFACE_FRICTION, -RESTITUTION))
 	end
 end
 

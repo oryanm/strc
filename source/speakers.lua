@@ -6,6 +6,7 @@ speakers.sound = TEsound
 function speakers:load()
 	self:playMusic()
 	self.sound.volume('sfx', 0.5)
+	self.sound.volume('music', 0.9)
 end
 
 function speakers:play(audioFile, tags, volume, pitch, func)

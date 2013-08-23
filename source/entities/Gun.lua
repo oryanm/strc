@@ -79,3 +79,6 @@ function Gun:destroy()
 	self:safe()
 	Weapon.destroy(self)
 end
+
+function Gun:draw()
+end

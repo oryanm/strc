@@ -39,18 +39,13 @@ function LivingObject:calculateSpeed(dt, acceleration)
 end
 
 function LivingObject:move(vector)
+	GameObject.move(self, vector)
 	local x, y = vector:unpack()
-	self.shape:move(x, y)
 
 	-- move all attached objects as well
 	for _, v in pairs(self.weapons) do
 		v.shape:move(x, y)
 	end
-end
-
-function LivingObject:moveTo(x, y)
-	local cx, cy = self.shape:center()
-	self:move(vector.new(x - cx, y - cy))
 end
 
 function LivingObject:attack()
