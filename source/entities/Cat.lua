@@ -28,9 +28,9 @@ function Cat:initialize(shape)
 end
 
 function Cat:update(dt)
+	self:limitJump(dt)
 	LivingObject.update(self, dt)
 	self:checkForLock()
-	self:limitJump(dt)
 	self:addTrail()
 end
 
@@ -193,6 +193,7 @@ function Cat:unlock()
 	-- launch cat off of turtle
 	self:moveTo(x + 50, cy)
 	self.forces[JUMP] = FORCES.JUMP
+	game.timer.add(MAX_JUMP_TIME, function() self:afterJump() end)
 	-- release the trigger and switch weapons
 	self.weapon:safe()
 	self.weapon = self.weapons.melee
@@ -208,7 +209,7 @@ function Cat:moveLeft()
 end
 
 function Cat:jump()
-	if not self.paralyzed then
+	if not self.paralyzed and self.jumpTime == 0 then
 		self.forces[JUMP] = FORCES.JUMP
 		--		self.forces[JUMP] = force.new(0,
 		--			(JUMPING_FORCE * ((MAX_JUMP_TIME - cat.jumpTime)/MAX_JUMP_TIME)), JUMP)
