@@ -32,6 +32,7 @@ function GameObject:moveTo(x, y)
 	self:move(vector.new(x - cx, y - cy))
 end
 
+-- todo: collide based on angle
 function GameObject:collide(otherObject)
 	local selfLeft, selfTop, selfRight, selfBottom = self.shape:bbox()
 	local otherLeft, otherTop, otherRight, otherBottom = otherObject.shape:bbox()

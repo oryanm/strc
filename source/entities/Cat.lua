@@ -34,45 +34,6 @@ function Cat:update(dt)
 	self:addTrail()
 end
 
-function Cat:checkForLock()
-	local x, y = turtle.shape:center()
-	self.locked = self.shape:intersectsRay(x, y, 0, -1)
-	if self.locked then
-		local _, cy = self.shape:center()
-		self:moveTo(x, cy)
-		self.weapon = self.weapons.long
-	end
-end
-
-function Cat:unlock()
-	local x = turtle.shape:center()
-	local _, cy = self.shape:center()
-	-- launch cat off of turtle
-	self:moveTo(x + 50, cy)
-	self.forces[JUMP] = FORCES.JUMP
-	-- release the trigger and switch weapons
-	self.weapon:safe()
-	self.weapon = self.weapons.melee
-	self.locked = false
-	speakers:jumpSound()
-end
-
-function Cat:limitJump(dt)
-	if (self.forces[JUMP] ~= nil) then
-		-- update jump time when jumping
-		self.jumpTime = self.jumpTime + dt
-		-- by the time self.jumpTime is 10%,20%,..,100% of MAX_JUMP_TIME
-		-- this will reduce the jump force by 10%,20%,..,100%
-		local y = self.forces[JUMP].y - ((JUMPING_FORCE * dt) / MAX_JUMP_TIME)
-		self.forces[JUMP] = vector.new(self.forces[JUMP].x, math.min(y, 0))
-	end
-
-	-- stop jump force when max jump time reached
-	if (self.jumpTime > MAX_JUMP_TIME) then
-		self.forces[JUMP] = nil
-	end
-end
-
 function Cat:calculatePositionDelta(dt, acceleration)
 	return self:boundToScreen(
 		LivingObject.calculatePositionDelta(self, dt, acceleration))
@@ -93,6 +54,32 @@ function Cat:boundToScreen(positionDelta)
 	end
 
 	return positionDelta
+end
+
+function Cat:checkForLock()
+	local x, y = turtle.shape:center()
+	self.locked = self.shape:intersectsRay(x, y, 0, -1)
+	if self.locked then
+		local _, cy = self.shape:center()
+		self:moveTo(x, cy)
+		self.weapon = self.weapons.long
+	end
+end
+
+function Cat:limitJump(dt)
+	if (self.forces[JUMP] ~= nil) then
+		-- update jump time when jumping
+		self.jumpTime = self.jumpTime + dt
+		-- by the time self.jumpTime is 10%,20%,..,100% of MAX_JUMP_TIME
+		-- this will reduce the jump force by 10%,20%,..,100%
+		local y = self.forces[JUMP].y - ((JUMPING_FORCE * dt) / MAX_JUMP_TIME)
+		self.forces[JUMP] = vector.new(self.forces[JUMP].x, math.min(y, 0))
+	end
+
+	-- stop jump force when max jump time reached
+	if (self.jumpTime > MAX_JUMP_TIME) then
+		self.forces[JUMP] = nil
+	end
 end
 
 function Cat:draw()
@@ -198,6 +185,19 @@ function Cat:moveRight()
 		self.forces[MOVE_RIGHT] = FORCES.MOVE_RIGHT
 		self.direction = DIRECTION.RIGHT
 	end
+end
+
+function Cat:unlock()
+	local x = turtle.shape:center()
+	local _, cy = self.shape:center()
+	-- launch cat off of turtle
+	self:moveTo(x + 50, cy)
+	self.forces[JUMP] = FORCES.JUMP
+	-- release the trigger and switch weapons
+	self.weapon:safe()
+	self.weapon = self.weapons.melee
+	self.locked = false
+	speakers:jumpSound()
 end
 
 function Cat:moveLeft()
