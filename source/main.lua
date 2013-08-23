@@ -30,34 +30,38 @@ function love.load()
 	-- create a collider
 	collider = HardonCollider.new(100, on_collide, done_collide)
 
---	cati = love.graphics.newImage("/resources/images/cat5.png")
+	cati = love.graphics.newImage("/resources/images/cat5.png")
 
 	canvas:load()
 	game:start()
 end
 
+local accumulator	= 0
 function love.update(dt)
 	-- pause the game by not updating
 	if game.paused then return end
 
-	-- don't know what it does but it helps
-	-- if something takes too long we also suspend game logic. i think
-	dt = math.min(dt, 0.01)
+	local frameTime = math.min(dt, 0.166666667)
+	accumulator = accumulator + frameTime
 
-	speakers.sound.cleanup()
-	-- update timers in the game, wherever they are
-	game.timer.update(dt)
-	-- check for collisions
-	collider:update(dt)
+	while accumulator >= DELTA do
+		speakers.sound.cleanup()
+		-- update timers in the game, wherever they are
+		game.timer.update(DELTA)
+		-- check for collisions
+		collider:update(DELTA)
 
-	-- move stuff around
-	for k,v in pairs(game.objects) do
-		v:update(dt)
+		-- move stuff around
+		for k,v in pairs(game.objects) do
+			v:update(DELTA)
+		end
+
+		spawnEnemies(DELTA)
+
+		positionCamera(20, 50)
+
+		accumulator = accumulator - DELTA
 	end
-
-	spawnEnemies(dt)
-
-	positionCamera(20, 50)
 end
 
 local spawnTime = 0
@@ -66,7 +70,7 @@ function spawnEnemies(dt)
 	spawnTime = spawnTime + dt
 
 	if (spawnTime > x) then
-		x = math.random()*5
+		x = math.random()*1000.05
 		spawnTime = 0
 		Enemy:new()
 	end
