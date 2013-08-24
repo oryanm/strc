@@ -13,8 +13,6 @@ game.cat = {}
 
 
 function game:start()
-	speakers:load()
-
 	self:setMapBounds()
 	self:setCameraBounds()
 
@@ -46,8 +44,6 @@ function game:stop()
 	end
 
 	self.collider:clear()
-
-	speakers:silence()
 end
 
 function game:reset()

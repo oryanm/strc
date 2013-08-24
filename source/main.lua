@@ -24,6 +24,7 @@ function love.load()
 	cati = love.graphics.newImage(IMAGE_RESOURCES_PATH .. "cat5.png")
 	pointer = love.graphics.newImage(IMAGE_RESOURCES_PATH .. "pointer.png")
 
+	speakers:load()
 	canvas:load()
 	game:start()
 end
