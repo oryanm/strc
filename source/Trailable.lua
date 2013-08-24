@@ -6,7 +6,6 @@ Trailable =
 	drawTrail = function(self)
 		local trail = self:getTrail()
 
-		--TODO: this seems to drop the FPS like crazy
 		for i = 1, table.getn(trail) do
 			love.graphics.point(trail[i].x,  trail[i].y)
 		end

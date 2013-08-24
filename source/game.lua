@@ -41,6 +41,7 @@ end
 
 -- todo: bug! when the window is not focused the game will not
 -- receive release events from the keyboard or the mouse.
+-- need a pause menu to fix this
 function game:pause(paused)
 	self.paused = paused
 

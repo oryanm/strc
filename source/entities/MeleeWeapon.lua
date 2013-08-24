@@ -18,8 +18,11 @@ function MeleeWeapon:attack()
 		game.collider:setSolid(self.shape)
 
 		game.timer.add(0.2, function()
-			-- todo: if the weapon is destroyed within the timed 0.2s then self.shape will be nil
-			game.collider:setGhost(self.shape)
+			-- make sure self is not dead.
+			-- otherwise collider will throw exception
+			if game.objects[self.name] then
+				game.collider:setGhost(self.shape)
+			end
 			self.attacking = false
 		end)
 
