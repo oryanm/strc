@@ -56,7 +56,7 @@ function love.update(dt)
 			v:update(DELTA)
 		end
 
-		spawnEnemies(DELTA)
+--		spawnEnemies(DELTA)
 
 		positionCamera(20, 50)
 
@@ -182,4 +182,12 @@ end
 
 function math.sign(x)
 	return x > 0 and 1 or x < 0 and -1 or 0
+end
+
+function math.angleBetweenObjects(object, otherObject)
+	return math.angle(vector.new(object.shape:center()), vector.new(otherObject.shape:center()))
+end
+
+function math.angle(point, otherPoint)
+	return math.deg(math.atan2(otherPoint.x - point.x, otherPoint.y - point.y))
 end
