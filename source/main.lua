@@ -52,7 +52,7 @@ function love.update(dt)
 
 		spawnEnemies(DELTA)
 
-		positionCamera(20, 50)
+		camera:positionCamera(20, 50)
 
 		accumulator = accumulator - DELTA
 	end
@@ -80,17 +80,6 @@ function done_collide(dt, shape_a, shape_b)
 	-- rebound the two objects from each other
 	shape_b.object:rebound(shape_a.object)
 	shape_a.object:rebound(shape_b.object)
-end
-
--- the camera is positioned xPercent of the screen's width behind turtle's center
--- so that it fallows turtle when he moves
-function positionCamera(xPercent, yPercent)
-	if game.turtle then
-		local turtleXCenter,turtleYCenter = game.turtle.shape:center()
-		camera:setPosition(
-			math.floor(turtleXCenter - ((xPercent * game:screenWidth())/100)),
-			math.floor(turtleYCenter - ((yPercent * game:screenHeight())/100)))
-	end
 end
 
 function love.draw()
@@ -166,5 +155,3 @@ function love.focus(f)
 	-- pause the game when out of focus
 	game:pause(not f)
 end
-
-

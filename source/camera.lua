@@ -16,6 +16,38 @@ function camera:unset()
   love.graphics.pop()
 end
 
+-- the camera is positioned xPercent of the screen's width behind turtle's center
+-- so that it fallows turtle when he moves
+function camera:positionCamera(xPercent, yPercent)
+	if game.turtle then
+		local turtleXCenter,turtleYCenter = game.turtle.shape:center()
+		self:setPosition(
+			math.floor(turtleXCenter - ((xPercent * game:screenWidth())/100)),
+			math.floor(turtleYCenter - ((yPercent * game:screenHeight())/100)))
+	end
+end
+
+function camera:setPosition(x, y)
+	if x then self:setX(x) end
+	if y then self:setY(y) end
+end
+
+function camera:setX(value)
+	if self._bounds then
+		self._x = math.clamp(value, self._bounds.minx, self._bounds.maxx)
+	else
+		self._x = value
+	end
+end
+
+function camera:setY(value)
+	if self._bounds then
+		self._y = math.clamp(value, self._bounds.miny, self._bounds.maxy)
+	else
+		self._y = value
+	end
+end
+
 function camera:move(dx, dy)
   self._x = self._x + (dx or 0)
   self._y = self._y + (dy or 0)
@@ -29,29 +61,6 @@ function camera:scale(sx, sy)
   sx = sx or 1
   self.scaleX = self.scaleX * sx
   self.scaleY = self.scaleY * (sy or sx)
-end
-
-function camera:setX(value)
-  if self._bounds then
-    self._x = math.clamp(value, self._bounds.minx, self._bounds.maxx)
-	--if (value < self._bounds.minx) then self._x = self._bounds.minx
-	--elseif (value > self._bounds.maxx) then self._x = self._bounds.maxx end
-  else
-    self._x = value
-  end
-end
-
-function camera:setY(value)
-  if self._bounds then
-    self._y = math.clamp(value, self._bounds.miny, self._bounds.maxy)
-  else
-    self._y = value
-  end
-end
-
-function camera:setPosition(x, y)
-  if x then self:setX(x) end
-  if y then self:setY(y) end
 end
 
 function camera:setScale(sx, sy)
