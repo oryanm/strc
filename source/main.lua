@@ -1,3 +1,4 @@
+require('extendedMath')
 HardonCollider = require('lib.hardoncollider')
 vector = require('lib.hump.vector')
 require('lib.middleclass')
@@ -166,22 +167,4 @@ function love.focus(f)
 	game:pause(not f)
 end
 
-function math.clamp(x, min, max)
-  return x < min and min or (x > max and max or x)
-end
 
-function math.clampv(v, min, max)
-	return vector.new(math.clamp(v.x, min.x, max.x), math.clamp(v.y, min.y, max.y))
-end
-
-function math.sign(x)
-	return x > 0 and 1 or x < 0 and -1 or 0
-end
-
-function math.angleBetweenObjects(object, otherObject)
-	return math.angle(vector.new(object.shape:center()), vector.new(otherObject.shape:center()))
-end
-
-function math.angle(point, otherPoint)
-	return math.deg(math.atan2(otherPoint.x - point.x, otherPoint.y - point.y))
-end
