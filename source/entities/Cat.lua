@@ -95,49 +95,22 @@ function Cat:draw()
 end
 
 function Cat:collide(otherObject)
-	LivingObject.collide(self, otherObject)
-	local f
+	if LivingObject.collide(self, otherObject) == "UP" then
+		-- reset jumping
+		self.jumpTime = 0
 
-	if otherObject == earth then
-		f = self:collideWithEarth()
-	elseif otherObject.team ~= TEAMS.NEUTRAL and self.team ~= otherObject.team then
-		-- bump back
-		self.speed.x = -RESTITUTION*self.speed.x
-		f = vector.new(math.sign(otherObject.shape:center() -
-			self.shape:center()) * 10 * JUMPING_FORCE, JUMPING_FORCE)
-	elseif otherObject == turtle then
-		f = self:collideWithTurtle(otherObject)
+		if otherObject == turtle then
+			-- start walking
+			turtle.forces[WALK] = FORCES.WALK
+			self.forces[RIDE] = FORCES.RIDE
+		end
 	end
 
-	-- apply otherObject's force on self
-	self.forces[otherObject.name] = f
-end
-
-function Cat:collideWithEarth()
-	-- reset jumping
-	self.jumpTime = 0
-
-	-- add earth force to counter gravity
-	return FORCES.EARTH
-end
-
-function Cat:collideWithTurtle(otherObject)
-	local _, catTopYCoordinate, _, _ = self.shape:bbox()
-	local _, turtleTopYCoordinate, _, _ = otherObject.shape:bbox()
-
-	-- if cat is above turtle
-	if (catTopYCoordinate < turtleTopYCoordinate) then
-		-- start walking
-		turtle.forces[WALK] = FORCES.WALK
-		self.forces[RIDE] = FORCES.RIDE
-		-- same effect as colliding with earth
-		return self:collideWithEarth()
-	else -- if cat is to turtle's side
-		local ccx, ccy = self.shape:center()
-		local tcx, tcy = otherObject.shape:center()
-		self.speed.x = -RESTITUTION * self.speed.x
-
-		return ccx < tcx and FORCES.MOVE_LEFT or FORCES.MOVE_RIGHT
+	if otherObject.team ~= TEAMS.NEUTRAL and self.team ~= otherObject.team then
+		-- bump back
+		self.speed.x = -RESTITUTION*self.speed.x
+		self.forces[otherObject.name] = vector.new(math.sign(otherObject.shape:center() -
+			self.shape:center()) * 10 * JUMPING_FORCE, JUMPING_FORCE)
 	end
 end
 
@@ -145,7 +118,6 @@ function Cat:rebound(otherObject)
 	-- remove otherObject's force on self
 	self.forces[otherObject.name] = nil
 
-	-- TODO: bug: unlocking while jumping doesn't stop turtle's walking
 	if otherObject == turtle and not self.locked then
 		-- stop walking
 		turtle.forces[WALK] = nil

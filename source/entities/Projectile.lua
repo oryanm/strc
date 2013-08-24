@@ -26,6 +26,9 @@ function Projectile:update(dt)
 	end
 end
 
+function Projectile:collide(otherObject)
+end
+
 function Projectile:rebound(otherObject)
 	self:destroy()
 end

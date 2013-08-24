@@ -13,12 +13,9 @@ function Turtle:draw()
 end
 
 function Turtle:collide(otherObject)
-	-- todo: fix collisions from the side
-	if otherObject ~= cat  then LivingObject.collide(self, otherObject) end
-
+	-- turtle is a mostly passive and only collides with the earth
 	if otherObject == earth then
-		-- add earth force to counter gravity
-		self.forces[otherObject.name] = FORCES.EARTH
+		LivingObject.collide(self, otherObject)
 	end
 end
 

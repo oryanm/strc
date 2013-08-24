@@ -32,28 +32,50 @@ function GameObject:moveTo(x, y)
 	self:move(vector.new(x - cx, y - cy))
 end
 
--- todo: collide based on angle
 function GameObject:collide(otherObject)
 	local selfLeft, selfTop, selfRight, selfBottom = self.shape:bbox()
 	local otherLeft, otherTop, otherRight, otherBottom = otherObject.shape:bbox()
 
-	-- if self's bottom is lower than other's top
-	if selfBottom > otherTop then
-		local halfOfHeightsSum = ((selfBottom - selfTop) + (otherBottom - otherTop)) / 2
-		-- and self is at the top half of other
-		if otherBottom - selfTop > halfOfHeightsSum then
-			local overlap = math.floor(selfBottom - otherTop)
-			-- if the overlap is big enough (moving cat when the overlap is too small will cause stuttering)
-			if overlap > 1 then
-				-- move cat back
-				local centerX, centerY = self.shape:center()
-				self:moveTo(centerX, centerY - overlap)
-			end
+	local angle = math.angleBetweenObjects(otherObject, self)
+	local center = vector.new(otherObject.shape:center())
+	local topRight = math.angle(center, vector.new(otherRight, otherTop))
+	local topLeft = math.angle(center, vector.new(otherLeft, otherTop))
+	local bottmRight = math.angle(center, vector.new(otherRight, otherBottom))
+	local bottomLeft = math.angle(center, vector.new(otherLeft, otherBottom))
+
+	local result
+
+	-- todo: handel Points better
+	if instanceOf(Projectile, otherObject) then
+		return "DOWN"
+	end
+
+
+	if angle > topRight or angle < topLeft then
+		result="UP"
+		local overlap = math.floor(selfBottom - otherTop)
+		-- if the overlap is big enough (moving cat when the overlap is too small will cause stuttering)
+		if overlap > 1 then
+			-- move cat back
+			local centerX, centerY = self.shape:center()
+			self:moveTo(centerX, centerY - overlap)
 		end
+
+		self.forces[otherObject.name] = FORCES.EARTH
+	elseif angle < topRight and angle > bottmRight then
+		result="RIGHT"
+		self.forces[otherObject.name] = FORCES.MOVE_RIGHT + vector.new(20000,0)
+	elseif angle > topLeft and angle < bottomLeft then
+		result="LEFT"
+		self.forces[otherObject.name] = FORCES.MOVE_LEFT + vector.new(-20000,0)
+	else
+		result="DOWN"
 	end
 
 	-- apply collision affect on speed
 	self.speed = self.speed:permul(vector.new(SURFACE_FRICTION, -RESTITUTION))
+
+	return result
 end
 
 function GameObject:rebound(otherObject)
