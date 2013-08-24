@@ -30,7 +30,8 @@ function love.load()
 	-- create a collider
 	collider = HardonCollider.new(100, on_collide, done_collide)
 
-	cati = love.graphics.newImage("/resources/images/cat5.png")
+	cati = love.graphics.newImage(IMAGE_RESOURCES_PATH .. "cat5.png")
+	pointer = love.graphics.newImage(IMAGE_RESOURCES_PATH .. "pointer.png")
 
 	canvas:load()
 	game:start()
@@ -56,7 +57,7 @@ function love.update(dt)
 			v:update(DELTA)
 		end
 
---		spawnEnemies(DELTA)
+		spawnEnemies(DELTA)
 
 		positionCamera(20, 50)
 
@@ -70,7 +71,7 @@ function spawnEnemies(dt)
 	spawnTime = spawnTime + dt
 
 	if (spawnTime > x) then
-		x = math.random()*1000.05
+		x = math.random()*4.55
 		spawnTime = 0
 		Enemy:new()
 	end
@@ -94,8 +95,8 @@ function positionCamera(xPercent, yPercent)
 	if turtle then
 		local turtleXCenter,turtleYCenter = turtle.shape:center()
 		camera:setPosition(
-			(turtleXCenter - ((xPercent * game:screenWidth())/100)),
-			(turtleYCenter - ((yPercent * game:screenHeight())/100)))
+			math.floor(turtleXCenter - ((xPercent * game:screenWidth())/100)),
+			math.floor(turtleYCenter - ((yPercent * game:screenHeight())/100)))
 	end
 end
 
@@ -105,6 +106,7 @@ function love.draw()
 
 --	love.graphics.setColor(0,255,0,255)
 --	love.graphics.draw(background, 0, 0)
+	love.graphics.draw(pointer, 0, 200)
 
 	for k,v in pairs(game.objects) do
 		v:draw()

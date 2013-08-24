@@ -17,6 +17,7 @@ WALKING_FORCE = 1000
 GRAVITY_FORCE = 4000
 
 AUDIO_RESOURCES_PATH = '/resources/audio/'
+IMAGE_RESOURCES_PATH = '/resources/images/'
 
 TEAMS =
 {

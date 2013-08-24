@@ -150,7 +150,7 @@ end
 
 function Cat:moveRight()
 	if not self.paralyzed then
-		if self.locked and love.keyboard.isDown('lshift') and self.jumpTime == 0 then
+		if self.locked and self.jumpTime == 0 then
 			self:unlock()
 		end
 
@@ -183,8 +183,6 @@ end
 function Cat:jump()
 	if not self.paralyzed and self.jumpTime == 0 then
 		self.forces[JUMP] = FORCES.JUMP
-		--		self.forces[JUMP] = force.new(0,
-		--			(JUMPING_FORCE * ((MAX_JUMP_TIME - cat.jumpTime)/MAX_JUMP_TIME)), JUMP)
 		if self.jumpTime == 0 then
 			speakers:jumpSound()
 		end
