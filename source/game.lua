@@ -16,11 +16,24 @@ function game:start()
 	self:setMapBounds()
 	self:setCameraBounds()
 
-	game.collider = HardonCollider.new(100, on_collide, done_collide)
-	game.earth = Earth:new()
-	game.turtle = Turtle:new()
-	game.cat = Cat:new()
+	self.collider = HardonCollider.new(100, on_collide, done_collide)
+	self.earth = Earth:new()
+	self.turtle = Turtle:new()
+	self.cat = Cat:new()
 end
+
+function game:update(dt)
+	-- update timers in the game, wherever they are
+	self.timer.update(dt)
+	-- check for collisions
+	self.collider:update(dt)
+
+	-- move stuff around
+	for k,v in pairs(self.objects) do
+		v:update(dt)
+	end
+end
+
 
 function game:togglePause()
 	self:pause(not self.paused)

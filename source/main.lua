@@ -40,15 +40,8 @@ function love.update(dt)
 
 	while accumulator >= DELTA do
 		speakers.sound.cleanup()
-		-- update timers in the game, wherever they are
-		game.timer.update(DELTA)
-		-- check for collisions
-		game.collider:update(DELTA)
 
-		-- move stuff around
-		for k,v in pairs(game.objects) do
-			v:update(DELTA)
-		end
+		game:update(DELTA)
 
 		spawnEnemies(DELTA)
 
