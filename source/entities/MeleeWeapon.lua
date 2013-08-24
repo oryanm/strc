@@ -2,12 +2,12 @@ MeleeWeapon = class("MeleeWeapon", Weapon)
 
 function MeleeWeapon:initialize(owner, shape)
 	Weapon.initialize(self, 'MeleeWeapon', owner, shape or
-		collider:addRectangle(0, 0, 50, 50))
+		game.collider:addRectangle(0, 0, 50, 50))
 	self.damage = 20
 
 	local x,y = owner.shape:center()
 	self.shape:moveTo(x + 15, y)
-	collider:setGhost(self.shape)
+	game.collider:setGhost(self.shape)
 	self.ready = true
 end
 
@@ -15,11 +15,11 @@ function MeleeWeapon:attack()
 	if self.ready then
 		self.attacking = true
 		self.ready = false
-		collider:setSolid(self.shape)
+		game.collider:setSolid(self.shape)
 
 		game.timer.add(0.2, function()
 			-- todo: if the weapon is destroyed within the timed 0.2s then self.shape will be nil
-			collider:setGhost(self.shape)
+			game.collider:setGhost(self.shape)
 			self.attacking = false
 		end)
 

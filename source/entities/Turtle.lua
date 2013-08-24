@@ -2,7 +2,7 @@ Turtle = class('Turtle', LivingObject)
 
 function Turtle:initialize(shape)
 	LivingObject.initialize(self, 'Turtle', shape or
-		collider:addRectangle(50, 300, 200, 100))
+		game.collider:addRectangle(50, 300, 200, 100))
 	self.direction = DIRECTION.RIGHT
 	self.health = 50
 	self.team = TEAMS.GOODSIDE
@@ -14,7 +14,7 @@ end
 
 function Turtle:collide(otherObject)
 	-- turtle is a mostly passive and only collides with the earth
-	if otherObject == earth then
+	if otherObject == game.earth then
 		LivingObject.collide(self, otherObject)
 	end
 end
@@ -28,7 +28,7 @@ function Turtle:rebound(otherObject)
 end
 
 function Turtle:destroy()
-	if cat then cat:destroy() end
+	if game.cat then game.cat:destroy() end
 	LivingObject.destroy(self)
-	turtle = nil
+	game.turtle = nil
 end

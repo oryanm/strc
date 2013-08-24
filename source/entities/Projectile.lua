@@ -4,8 +4,8 @@ Projectile.sequence = 0
 function Projectile:initialize(owner, target, shape)
 	Projectile.sequence = Projectile.sequence + 1
 	GameObject.initialize(self, 'Projectile' .. '#' .. Projectile.sequence,
-		shape or collider:addPoint(camera._x + 100, camera._y + 300))
-	collider:copyGroups(owner.shape, self.shape)
+		shape or game.collider:addPoint(camera._x + 100, camera._y + 300))
+	game.collider:copyGroups(owner.shape, self.shape)
 	self.team = owner.team
 	self.damage = 10
 	-- the position self wants to go to

@@ -20,16 +20,7 @@ require('entities.MeleeWeapon')
 require('entities.Gun')
 require('entities.Projectile')
 
-collider = nil
-
-earth = nil
-turtle = nil
-cat = nil
-
 function love.load()
-	-- create a collider
-	collider = HardonCollider.new(100, on_collide, done_collide)
-
 	cati = love.graphics.newImage(IMAGE_RESOURCES_PATH .. "cat5.png")
 	pointer = love.graphics.newImage(IMAGE_RESOURCES_PATH .. "pointer.png")
 
@@ -50,7 +41,7 @@ function love.update(dt)
 		-- update timers in the game, wherever they are
 		game.timer.update(DELTA)
 		-- check for collisions
-		collider:update(DELTA)
+		game.collider:update(DELTA)
 
 		-- move stuff around
 		for k,v in pairs(game.objects) do
@@ -92,8 +83,8 @@ end
 -- the camera is positioned xPercent of the screen's width behind turtle's center
 -- so that it fallows turtle when he moves
 function positionCamera(xPercent, yPercent)
-	if turtle then
-		local turtleXCenter,turtleYCenter = turtle.shape:center()
+	if game.turtle then
+		local turtleXCenter,turtleYCenter = game.turtle.shape:center()
 		camera:setPosition(
 			math.floor(turtleXCenter - ((xPercent * game:screenWidth())/100)),
 			math.floor(turtleYCenter - ((yPercent * game:screenHeight())/100)))
@@ -123,8 +114,8 @@ local row = 0
 
 -- TODO: have a real HUD
 function drawHUD()
-	if not cat then return end
-	local x1, y1, x2, y2 = cat.shape:bbox()
+	if not game.cat then return end
+	local x1, y1, x2, y2 = game.cat.shape:bbox()
 
 	printToHUD("w : " .. game:screenWidth())
 	printToHUD("h : " .. game:screenHeight())
@@ -133,11 +124,11 @@ function drawHUD()
 		string.format("%06.2f", y1) .. ")")
 	printToHUD("fps : " .. love.timer.getFPS())
 	printToHUD("v : (" ..
-		string.format("%07.3f", cat.speed.x) .. ", " ..
-		string.format("%07.3f", cat.speed.y) .. ")")
+		string.format("%07.3f", game.cat.speed.x) .. ", " ..
+		string.format("%07.3f", game.cat.speed.y) .. ")")
 
 	local vector = vector.new()
-	for k, force in pairs(cat.forces) do
+	for k, force in pairs(game.cat.forces) do
 		vector = vector + force
 	end
 	printToHUD("f : (" ..

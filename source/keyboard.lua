@@ -16,43 +16,43 @@ keyboard.keys.lshift	= {}
 keyboard.keys.escape 	= {}
 
 local function moveRight()
-	if not cat or game.paused then return end
-	cat:moveRight()
+	if not game.cat or game.paused then return end
+	game.cat:moveRight()
 end
 
 local function moveLeft()
-	if not cat or game.paused then return end
-	cat:moveLeft()
+	if not game.cat or game.paused then return end
+	game.cat:moveLeft()
 end
 
 local function jump()
-	if not cat or game.paused then return end
-	cat:jump()
+	if not game.cat or game.paused then return end
+	game.cat:jump()
 end
 
 local function afterMoveRight()
-	if not cat then return end
-	cat:afterMoveRight()
+	if not game.cat then return end
+	game.cat:afterMoveRight()
 end
 
 local function afterMoveLeft()
-	if not cat then return end
-	cat:afterMoveLeft()
+	if not game.cat then return end
+	game.cat:afterMoveLeft()
 end
 
 local function afterJump()
-	if not cat then return end
-	cat:afterJump()
+	if not game.cat then return end
+	game.cat:afterJump()
 end
 
 local function attack()
-	if not cat or game.paused then return end
-	cat:attack()
+	if not game.cat or game.paused then return end
+	game.cat:attack()
 end
 
 local function afterAttack()
-	if not cat then return end
-	cat:afterAttack()
+	if not game.cat then return end
+	game.cat:afterAttack()
 end
 
 local function toggleFullscreen()

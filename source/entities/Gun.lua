@@ -2,10 +2,10 @@ Gun = class('Gun', Weapon)
 
 function Gun:initialize(owner, shape)
 	Weapon.initialize(self, 'Gun', owner, shape or
-		collider:addRectangle(0, 0, 30, 10))
+		game.collider:addRectangle(0, 0, 30, 10))
 
 	local x,y = owner.shape:center()
-	collider:setGhost(self.shape)
+	game.collider:setGhost(self.shape)
 	self.shape:moveTo(x + 20, y)
 	self.fireRate = 0.05
 	self.clipSize = 30
@@ -49,7 +49,7 @@ function Gun:fireProjectile()
 			self.loadedAmmo = self.loadedAmmo - 1
 			-- fire the projectile towards the mouse
 			Projectile:new(self, mouse.getPosition() + vector.new(camera._x, camera._y),
-				collider:addPoint((vector.new(self.shape:center()) + vector.new(10,0)):unpack()))
+				game.collider:addPoint((vector.new(self.shape:center()) + vector.new(10,0)):unpack()))
 			speakers:playSoundEffect('fireProjectile.wav')
 		end
 	end

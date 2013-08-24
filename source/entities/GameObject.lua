@@ -83,7 +83,7 @@ end
 
 function GameObject:destroy()
 	-- remove self from the world (the collider) and from the game
-	collider:remove(self.shape)
+	game.collider:remove(self.shape)
 	game.objects[self.name] = nil
 end
 
@@ -96,6 +96,6 @@ Earth = class('Earth', GameObject)
 
 function Earth:initialize(shape)
 	GameObject.initialize(self, 'Earth', shape or
-		collider:addRectangle(0, game:mapHeight() - 20, game:mapWidth(), 100))
-	collider:setPassive(self.shape)
+		game.collider:addRectangle(0, game:mapHeight() - 20, game:mapWidth(), 100))
+	game.collider:setPassive(self.shape)
 end

@@ -3,8 +3,8 @@ Cat:include(Trailable)
 
 function Cat:initialize(shape)
 	LivingObject.initialize(self, 'Cat', shape or
-		collider:addRectangle(400, 100, 44, 67))
-	collider:addToGroup('Cats', self.shape)
+		game.collider:addRectangle(400, 100, 44, 67))
+	game.collider:addToGroup('Cats', self.shape)
 	self.forces[GRAVITY] = FORCES.GRAVITY
 	self.health = 100
 	self.damage = 40
@@ -14,9 +14,9 @@ function Cat:initialize(shape)
 	self.jumpTime = 0
 
 	self.weapons.long = Gun:new(self)
-	collider:addToGroup('Cats', self.weapons.long.shape)
+	game.collider:addToGroup('Cats', self.weapons.long.shape)
 	self.weapons.melee = MeleeWeapon:new(self)
-	collider:addToGroup('Cats', self.weapons.melee.shape)
+	game.collider:addToGroup('Cats', self.weapons.melee.shape)
 	self.weapon = self.weapons.melee
 
 	-- set the trail
@@ -57,7 +57,7 @@ function Cat:boundToScreen(positionDelta)
 end
 
 function Cat:checkForLock()
-	local x, y = turtle.shape:center()
+	local x, y = game.turtle.shape:center()
 	self.locked = self.shape:intersectsRay(x, y, 0, -1)
 	if self.locked then
 		local _, cy = self.shape:center()
@@ -99,9 +99,9 @@ function Cat:collide(otherObject)
 		-- reset jumping
 		self.jumpTime = 0
 
-		if otherObject == turtle then
+		if otherObject == game.turtle then
 			-- start walking
-			turtle.forces[WALK] = FORCES.WALK
+			game.turtle.forces[WALK] = FORCES.WALK
 			self.forces[RIDE] = FORCES.RIDE
 		end
 	end
@@ -118,9 +118,9 @@ function Cat:rebound(otherObject)
 	-- remove otherObject's force on self
 	self.forces[otherObject.name] = nil
 
-	if otherObject == turtle and not self.locked then
+	if otherObject == game.turtle and not self.locked then
 		-- stop walking
-		turtle.forces[WALK] = nil
+		game.turtle.forces[WALK] = nil
 		self.forces[RIDE] = nil
 	elseif otherObject.team ~= TEAMS.NEUTRAL and self.team ~= otherObject.team then
 		self:takeHit(otherObject.damage)
@@ -145,7 +145,7 @@ end
 
 function Cat:destroy()
 	LivingObject.destroy(self)
-	cat = nil
+	game.cat = nil
 end
 
 function Cat:moveRight()
@@ -160,7 +160,7 @@ function Cat:moveRight()
 end
 
 function Cat:unlock()
-	local x = turtle.shape:center()
+	local x = game.turtle.shape:center()
 	local _, cy = self.shape:center()
 	-- launch cat off of turtle
 	self:moveTo(x + 50, cy)

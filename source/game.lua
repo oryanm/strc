@@ -6,15 +6,22 @@ game.objects = {}
 game.paused = false
 game.timer = require('lib.hump.timer')
 
+game.collider = {}
+game.earth = {}
+game.turtle = {}
+game.cat = {}
+
+
 function game:start()
+	speakers:load()
+
 	self:setMapBounds()
 	self:setCameraBounds()
 
-	earth = Earth:new()
-	turtle = Turtle:new()
-	cat = Cat:new()
-
-	speakers:load()
+	game.collider = HardonCollider.new(100, on_collide, done_collide)
+	game.earth = Earth:new()
+	game.turtle = Turtle:new()
+	game.cat = Cat:new()
 end
 
 function game:togglePause()
@@ -38,7 +45,7 @@ function game:stop()
 		v:destroy()
 	end
 
-	collider:clear()
+	self.collider:clear()
 
 	speakers:silence()
 end
@@ -98,6 +105,6 @@ function game:toggleFullscreen()
 	self.map.height = self:screenHeight()
 	-- reset the camera to fit the new screen size
 	self:setCameraBounds()
-	local x = earth.shape:center()
-	earth.shape:moveTo(x, self:mapHeight() - 10)
+	local x = self.earth.shape:center()
+	self.earth.shape:moveTo(x, self:mapHeight() - 10)
 end

@@ -4,13 +4,13 @@ mouse.keys.r = {}
 mouse.keys.l = {}
 
 local function attack()
-	if not cat or game.paused then return end
-	cat:attack()
+	if not game.cat or game.paused then return end
+	game.cat:attack()
 end
 
 local function afterAttack()
-	if not cat then return end
-	cat:afterAttack()
+	if not game.cat then return end
+	game.cat:afterAttack()
 end
 
 mouse.keys.l.pressed	= attack
